@@ -29,7 +29,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BookHistoryComponent } from './components/book-history/book-history.component';
 import { BookListComponent } from './components/book-list/book-list.component';
-import { BookService } from './components/book-list/bookservice';
+import { BookService } from './components/book-list/book.service';
 import { NavigationTopComponent } from './components/navigation-top/navigation-top.component';
 
 @NgModule({

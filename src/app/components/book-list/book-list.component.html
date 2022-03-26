@@ -42,15 +42,24 @@
     <ng-template pTemplate="caption">
       <div class="table-header">
         List of Books
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filterGlobal($any($event.target)?.value, 'contains')"
-            placeholder="Global Search"
-          />
-        </span>
+        <div class="flex">
+          <button
+            pButton
+            label="Clear"
+            class="p-button-outlined"
+            icon="pi pi-filter-slash"
+            (click)="clear(dt)"
+          ></button>
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target)?.value, 'contains')"
+              placeholder="Global Search"
+            />
+          </span>
+        </div>
       </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -129,10 +138,21 @@
           <span class="p-column-title">Id</span>
           {{ book.id }}
         </td>
-        <td>
+        <td pEditableColumn>
+          <span class="p-column-title">Title</span>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="book.title" />
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ book.title }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <!-- <td>
           <span class="p-column-title">Title</span>
           <span class="image-text">{{ book.title }}</span>
-        </td>
+        </td> -->
         <td>
           <span class="p-column-title">Description</span>
           <span class="image-text">{{ book.description }}</span>

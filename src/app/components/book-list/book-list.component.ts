@@ -8,7 +8,7 @@ import {
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Book } from './book-list.models';
-import { BookService } from './bookservice';
+import { BookService } from './book.service';
 
 @Component({
   selector: 'app-book-list',
@@ -153,5 +153,9 @@ export class BookListComponent implements OnInit {
     }
 
     return date.getFullYear() + '-' + month + '-' + day;
+  }
+
+  clear(table: Table) {
+    table.clear();
   }
 }
