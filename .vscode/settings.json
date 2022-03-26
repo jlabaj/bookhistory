@@ -1,0 +1,76 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.fixAll.eslint": true,
+      "source.organizeImports": true,
+      "source.formatOnPaste": true,
+      "source.formatOnSave": true
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": false
+      },
+      "editor.formatOnSave": true
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+      },
+      "editor.formatOnSave": true
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+      },
+      "editor.formatOnSave": true
+    },
+    "[scss]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+      },
+      "editor.formatOnSave": true
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+      },
+      "editor.formatOnSave": true
+    },
+    "eslint.validate": ["javascript", "typescript", "json", "html"],
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.zoomLevel": 0,
+    "eslint.codeActionsOnSave.mode": "problems",
+    "prettier.arrowParens": "avoid",
+    "beautify.config": "",
+    "eslint.format.enable": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.options": {
+      "eslint.validate": ["typescript", "javascript", "json", "html"],
+      "eslint.debug": false,
+      "eslint.lintTask.enable": true,
+      "eslint.workingDirectories": [
+        {
+          "mode": "auto"
+        }
+      ],
+      "extensions": [".js", ".ts", ".html"]
+    },
+    "git.ignoreWindowsGit27Warning": true,
+    "prettier.requireConfig": true,
+    "eslint.codeAction.showDocumentation": {
+      "enable": true
+    },
+    "search.exclude": {
+      "package-lock.json": true
+    },
+  }
+  

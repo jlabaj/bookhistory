@@ -1,0 +1,74 @@
+{
+  "books": {
+    "28b73a80-2597-4f51-bcf9-5a5e7ba15328": {
+      "id": "1",
+      "title": "Companion Without Faith",
+      "description": "Adventure - Epic tales of grand journeys",
+      "publishedDate": "2015-09-13",
+      "authors": ["Ioni Bowcher", "James Butt"]
+    },
+    "7bb22532-9d93-45cf-b928-8e5deb43e5d5": {
+      "id": "2",
+      "title": "Prince Of Wood",
+      "description": "Children - Created with young children in mind. Fairly simple stories.",
+      "publishedDate": "2014-06-06",
+      "authors": ["Amy Elsner", "Asiya Javayant"]
+    },
+    "46aef34c-225a-4fbc-b578-454e08527591": {
+      "id": "3",
+      "title": "Pirates Of The South",
+      "description": "Drama - Darker words and thus a darker feel. Drama about the vengeance of the south.",
+      "publishedDate": "2016-12-14",
+      "authors": ["Xuxue Feng", "Ivan Magalhaes"]
+    },
+    "b12fedbe-befc-4e40-a54b-1b0a41090fe6": {
+      "id": "4",
+      "title": "Blacksmiths Of Utopia",
+      "description": "Fantasy - Fantasy creatures and magic.",
+      "publishedDate": "2020-09-22",
+      "authors": ["Onyama Limba", "Anna Fali"]
+    },
+    "da048ff0-b9d7-4573-8aef-9ecf8050232b": {
+      "id": "5",
+      "title": "Snakes And Agents",
+      "description": "Horror - Ghost stories, 'creepypasta' and stories you may have heard or told your friends around a campfire or during a sleepover.",
+      "publishedDate": "2017-09-08",
+      "authors": ["Bernardo Dominic", "Stephen Shaw"]
+    },
+    "039cbeca-bcfd-490b-a9af-458a76577c5b": {
+      "id": "6",
+      "title": "Strangers And Invaders",
+      "description": "Humor - Odd and funny",
+      "publishedDate": "2017-01-02",
+      "authors": ["Ioni Bowcher", "James Butt"]
+    },
+    "3967a76c-8a20-4ce8-8c30-6a9564e6dad2": {
+      "id": "7",
+      "title": "World Of Fire",
+      "description": "Mystery - Secrets, hidden treasures, and other mysteries",
+      "publishedDate": "2021-07-05",
+      "authors": ["Elwin Sharvill", "Solange Shinko"]
+    },
+    "8fa68a2b-c0a3-427c-a5b9-5bb46a00198c": {
+      "id": "8",
+      "title": "Doom With Vigor",
+      "description": "Fiction - Story about an elf, secrets of the forest and creatures of our realm",
+      "publishedDate": "2018-04-14",
+      "authors": ["Valentine Gillian", "Kati Rulapaugh"]
+    },
+    "4c431731-eacc-40fa-9770-f954735378ac": {
+      "id": "9",
+      "title": "Life In The Fog",
+      "description": "Romance - Of course, about love. But also about the pain that comes with a break up, as well as stories in which love is the main theme, but not necessarily the plot.",
+      "publishedDate": "2013-03-13",
+      "authors": ["Youlanda Schemmer", "Dyan Oldroyd"]
+    },
+    "459cf9a6-1461-41af-8531-65e14df1ba99": {
+      "id": "10",
+      "title": "Commanding The Dungeons",
+      "description": "Sci-Fi - Aliens, space travel, robotic enslavement, and all the other common themes can be found here.",
+      "publishedDate": "2011-01-11",
+      "authors": ["Roxane Campain", "Lavera Perin"]
+    }
+  }
+}
