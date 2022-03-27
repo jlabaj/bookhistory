@@ -95,6 +95,11 @@ export class BookListComponent implements OnInit {
   updateBook(book: Book) {
     if (book.key) {
       this.bookStore.update(book.key, book).subscribe(() => {
+        this.bookHistoryStore.add({
+          bookId: book.key,
+          timeOfChange: new Date().toLocaleString(),
+          change: book.title,
+        });
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',

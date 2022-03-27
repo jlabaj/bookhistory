@@ -50,7 +50,7 @@ export class DefaultStore<T extends EntityBase>
     this.baseDataService
       .update(key, entity)
       .pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe((e) => this.updateStore(e));
+      .subscribe(() => this.updateStore(entity));
     return this.updateActionSource$;
   }
 

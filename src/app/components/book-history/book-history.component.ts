@@ -29,8 +29,6 @@ export class BookHistoryFireListDataService<
   styleUrls: ['./book-history.component.scss'],
 })
 export class BookHistoryComponent implements OnInit {
-  booksHistory!: BookHistory[];
-
   first = 0;
 
   rows = 10;
@@ -56,12 +54,12 @@ export class BookHistoryComponent implements OnInit {
   }
 
   isLastPage(): boolean {
-    return this.booksHistory
-      ? this.first === this.booksHistory.length - this.rows
+    return this.bookHistoryStore.getStore()
+      ? this.first === this.bookHistoryStore.getStore().length - this.rows
       : true;
   }
 
   isFirstPage(): boolean {
-    return this.booksHistory ? this.first === 0 : true;
+    return this.bookHistoryStore.getStore() ? this.first === 0 : true;
   }
 }

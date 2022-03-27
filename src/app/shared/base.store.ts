@@ -44,7 +44,7 @@ export abstract class BaseStore {
       newEntity = { ...entityToBeUpdated, ...entity };
       if (this.removeFromStore(entityToBeUpdated.key)) {
         this.addItemToStore(newEntity);
-        this.addActionSource$.next(EntityOp.ADD);
+        this.updateActionSource$.next(EntityOp.ADD);
         return true;
       }
       return false;
@@ -55,9 +55,9 @@ export abstract class BaseStore {
   protected removeFromStore(key?: string): boolean {
     if (!key || key === '') return false;
     const entities = this.getStore().filter((e) => e.key !== key);
-    if (entities.length > 0) {
+    if (entities.length > 0 || this.getStore().length == 1) {
       this._set(entities);
-      this.addActionSource$.next(EntityOp.DELETE);
+      this.removeActionSource$.next(EntityOp.DELETE);
       return true;
     }
     return false;
