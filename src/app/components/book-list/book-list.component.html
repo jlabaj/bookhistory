@@ -22,157 +22,197 @@
       ></button> -->
     </ng-template>
   </p-toolbar>
-
-  <p-table
-    #dt
-    [value]="books"
-    [(selection)]="selectedBooks"
-    dataKey="id"
-    styleClass="p-datatable-customers"
-    [rowHover]="true"
-    [rows]="10"
-    [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    [loading]="loading"
-    [paginator]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [filterDelay]="0"
-    [globalFilterFields]="['title', 'description', 'authors']"
-  >
-    <ng-template pTemplate="caption">
-      <div class="table-header">
-        List of Books
-        <div class="flex">
-          <button
-            pButton
-            label="Clear"
-            class="p-button-outlined"
-            icon="pi pi-filter-slash"
-            (click)="clear(dt)"
-          ></button>
-          <span class="p-input-icon-left ml-auto">
-            <i class="pi pi-search"></i>
+  <ng-container *ngIf="bookStore.entity$ | async as books">
+    <p-table
+      #dt
+      [value]="books"
+      [(selection)]="selectedBooks"
+      dataKey="id"
+      styleClass="p-datatable-customers"
+      [rowHover]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [loading]="loading"
+      [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [filterDelay]="0"
+      [globalFilterFields]="['title', 'description', 'authors']"
+      (onEditComplete)="onEditComplete($event)"
+    >
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          List of Books
+          <div class="flex">
+            <button
+              pButton
+              label="Clear"
+              class="p-button-outlined"
+              icon="pi pi-filter-slash"
+              (click)="clear(dt)"
+            ></button>
+            <span class="p-input-icon-left ml-auto">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="
+                  dt.filterGlobal($any($event.target)?.value, 'contains')
+                "
+                placeholder="Global Search"
+              />
+            </span>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem"></th>
+          <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="title">
+            Title <p-sortIcon field="title"></p-sortIcon>
+          </th>
+          <th pSortableColumn="description">
+            Description <p-sortIcon field="description"></p-sortIcon>
+          </th>
+          <th pSortableColumn="publishedDate">
+            publishedDate <p-sortIcon field="publishedDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="authors">
+            Authors <p-sortIcon field="authors"></p-sortIcon>
+          </th>
+          <th style="width: 8rem"></th>
+        </tr>
+        <tr>
+          <th>
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>
             <input
               pInputText
               type="text"
-              (input)="dt.filterGlobal($any($event.target)?.value, 'contains')"
-              placeholder="Global Search"
+              (input)="
+                dt.filter($any($event.target)?.value, 'id', 'startsWith')
+              "
+              placeholder="Search by Id"
+              class="p-column-filter"
             />
-          </span>
-        </div>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-      <tr>
-        <th style="width: 3rem"></th>
-        <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
-        <th pSortableColumn="title">
-          Title <p-sortIcon field="title"></p-sortIcon>
-        </th>
-        <th pSortableColumn="description">
-          Description <p-sortIcon field="description"></p-sortIcon>
-        </th>
-        <th pSortableColumn="publishedDate">
-          publishedDate <p-sortIcon field="publishedDate"></p-sortIcon>
-        </th>
-        <th pSortableColumn="authors">
-          Authors <p-sortIcon field="authors"></p-sortIcon>
-        </th>
-        <th style="width: 8rem"></th>
-      </tr>
-      <tr>
-        <th>
-          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-        </th>
-        <th>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filter($any($event.target)?.value, 'id', 'startsWith')"
-            placeholder="Search by Id"
-            class="p-column-filter"
-          />
-        </th>
-        <th>
-          <input
-            pInputText
-            type="text"
-            (input)="dt.filter($any($event.target)?.value, 'title', 'contains')"
-            placeholder="Search by Title"
-            class="p-column-filter"
-          />
-        </th>
-        <th>
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt.filter($any($event.target)?.value, 'description', 'contains')
-            "
-            placeholder="Search by Description"
-            class="p-column-filter"
-          />
-        </th>
-        <th>
-          <p-calendar
-            (onSelect)="onDateSelect($event)"
-            (onClearClick)="dt.filter('', 'publishedDate', 'equals')"
-            [showButtonBar]="true"
-            styleClass="p-column-filter"
-            placeholder="Publish Date"
-            [readonlyInput]="true"
-            dateFormat="yy-mm-dd"
-          ></p-calendar>
-        </th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-book>
-      <tr class="p-selectable-row">
-        <td>
-          <p-tableCheckbox [value]="book"></p-tableCheckbox>
-        </td>
-        <td>
-          <span class="p-column-title">Id</span>
-          {{ book.id }}
-        </td>
-        <td pEditableColumn>
-          <span class="p-column-title">Title</span>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <input pInputText type="text" [(ngModel)]="book.title" />
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{ book.title }}
-            </ng-template>
-          </p-cellEditor>
-        </td>
-        <!-- <td>
-          <span class="p-column-title">Title</span>
-          <span class="image-text">{{ book.title }}</span>
-        </td> -->
-        <td>
-          <span class="p-column-title">Description</span>
-          <span class="image-text">{{ book.description }}</span>
-        </td>
-        <td>
-          <span class="p-column-title">Publish Date</span>
-          {{ book.publishedDate }}
-        </td>
-        <td>
-          <span class="p-column-title">Authors</span>
-          {{ book.authors }}
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="8">No books found.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+          </th>
+          <th>
+            <input
+              pInputText
+              type="text"
+              (input)="
+                dt.filter($any($event.target)?.value, 'title', 'contains')
+              "
+              placeholder="Search by Title"
+              class="p-column-filter"
+            />
+          </th>
+          <th>
+            <input
+              pInputText
+              type="text"
+              (input)="
+                dt.filter($any($event.target)?.value, 'description', 'contains')
+              "
+              placeholder="Search by Description"
+              class="p-column-filter"
+            />
+          </th>
+          <th>
+            <p-calendar
+              (onSelect)="onDateSelect($event)"
+              (onClearClick)="dt.filter('', 'publishedDate', 'equals')"
+              [showButtonBar]="true"
+              styleClass="p-column-filter"
+              placeholder="Publish Date"
+              [readonlyInput]="true"
+              dateFormat="yy-mm-dd"
+            ></p-calendar>
+          </th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-book>
+        <tr class="p-selectable-row">
+          <td>
+            <p-tableCheckbox [value]="book"></p-tableCheckbox>
+          </td>
+          <td>
+            <span class="p-column-title">Id</span>
+            {{ book.id }}
+          </td>
+          <td [pEditableColumn]="book" [pEditableColumnField]="'title'">
+            <span class="p-column-title">Title</span>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="book.title" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ book.title }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="book" [pEditableColumnField]="'description'">
+            <span class="p-column-title">Description</span>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="book.description" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ book.description }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="book" [pEditableColumnField]="'publishedDate'">
+            <span class="p-column-title">Publish Date</span>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <p-calendar
+                  (onClearClick)="dt.filter('', 'publishedDate', 'equals')"
+                  [(ngModel)]="book.publishedDate"
+                  [showButtonBar]="true"
+                  styleClass="p-column-filter"
+                  placeholder="Publish Date"
+                  [readonlyInput]="true"
+                  dateFormat="yy-mm-dd"
+                ></p-calendar>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ book.publishedDate }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="book" [pEditableColumnField]="'authors'">
+            <span class="p-column-title">Authors</span>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <textarea
+                  id="authors"
+                  pInputTextarea
+                  [(ngModel)]="book.authors"
+                  required
+                  rows="3"
+                  cols="20"
+                ></textarea>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ book.authors }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8">No books found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-container>
 </div>
 
 <p-dialog
@@ -211,7 +251,6 @@
     <div class="p-field">
       <label for="publishedDate">Publish Date</label>
       <p-calendar
-        (onClearClick)="dt.filter('', 'publishedDate', 'equals')"
         [(ngModel)]="book.publishedDate"
         [showButtonBar]="true"
         styleClass="p-column-filter"

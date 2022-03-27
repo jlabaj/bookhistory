@@ -1,14 +1,32 @@
-import {
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, Injectable, OnInit, ViewChild } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
+import { getClassName } from '@bookhistory/shared/tools';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { Table } from 'primeng/table';
+import { tap } from 'rxjs';
+import { BookHistoryStore } from '../book-history/book-history.component';
+import { BookHistory } from '../book-history/book-history.models';
 import { Book } from './book-list.models';
-import { BookService } from './book.service';
+
+@Injectable()
+export class BookStore<Book> extends DefaultStore<Book> {
+  public constructor(
+    protected _baseDataService: BookFireListDataService<Book>
+  ) {
+    super(_baseDataService);
+  }
+}
+
+@Injectable()
+export class BookFireListDataService<
+  Book
+> extends FireListBaseDataService<Book> {
+  public constructor(db: AngularFireDatabase, httpClient: HttpClient) {
+    super(getClassName(Book), db, httpClient);
+  }
+}
 
 @Component({
   selector: 'app-book-list',
@@ -16,14 +34,11 @@ import { BookService } from './book.service';
   styleUrls: ['./book-list.component.scss'],
 })
 export class BookListComponent implements OnInit {
-  @Output() refreshList: EventEmitter<any> = new EventEmitter();
   bookDialog!: boolean;
 
   book!: Book;
 
   submitted!: boolean;
-
-  books!: Book[];
 
   selectedBooks!: Book[];
 
@@ -32,29 +47,17 @@ export class BookListComponent implements OnInit {
   @ViewChild('dt') table!: Table;
 
   constructor(
-    private bookService: BookService,
+    public bookStore: BookStore<Book>,
+    public bookHistoryStore: BookHistoryStore<BookHistory>,
     private primengConfig: PrimeNGConfig,
     private messageService: MessageService
   ) {}
 
   ngOnInit() {
-    // this.bookService.getBooksStatic().then(books => {
-    //     this.books = books;
-    //     this.loading = false;
-    // });
-
-    this.bookService
-      .getAll()
-      .valueChanges()
-      // .pipe(
-      //   map((changes) =>
-      //     changes.map((c) => ({ key: c.payload.key, ...c.payload.val() }))
-      //   )
-      // )
-      .subscribe((data) => {
-        this.books = data;
-        this.loading = false;
-      });
+    this.bookStore
+      .getSnapshotChanges()
+      .pipe(tap(() => (this.loading = false)))
+      .subscribe();
 
     this.primengConfig.ripple = true;
   }
@@ -78,66 +81,51 @@ export class BookListComponent implements OnInit {
     this.submitted = true;
 
     if (this.book.title?.trim()) {
-      if (this.book.id) {
-        this.bookService.update(this.book.id, this.book).then(() => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Book Created',
-            life: 3000,
-          });
-          this.submitted = true;
-          this.refreshList.emit();
-        });
-        // this.books[this.findIndexById(this.book.id)] = this.book;
+      if (this.book.key) {
+        this.updateBook(this.book);
+      } else {
+        this.createBook(this.book);
+      }
+
+      this.bookDialog = false;
+      this.book = {};
+    }
+  }
+
+  updateBook(book: Book) {
+    if (book.key) {
+      this.bookStore.update(book.key, book).subscribe(() => {
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
           detail: 'Book Updated',
           life: 3000,
         });
-      } else {
-        this.book.id = this.createId();
-        this.book.publishedDate = this.formatDate(this.book.publishedDate);
-        // this.books.push(this.book);
-        this.bookService.create(this.book).then(() => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Book Created',
-            life: 3000,
-          });
-          this.submitted = true;
-          this.refreshList.emit();
-        });
-      }
-
-      // this.books = [...this.books];
-      this.bookDialog = false;
-      this.book = {};
+        this.submitted = true;
+      });
     }
   }
 
-  createId(): string {
-    let id = '';
-    var chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
+  createBook(book: Book) {
+    this.book.publishedDate = this.formatDate(book.publishedDate);
+    this.bookStore.add(book).subscribe(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'Book Created',
+        life: 3000,
+      });
+      this.submitted = true;
+    });
   }
 
-  findIndexById(id: string): number {
-    let index = -1;
-    for (let i = 0; i < this.books.length; i++) {
-      if (this.books[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
+  onEditComplete(book: {
+    field: unknown;
+    data: Book;
+    originalEvent: unknown;
+    index: unknown;
+  }): void {
+    this.updateBook(book.data);
   }
 
   formatDate(date: any) {

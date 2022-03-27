@@ -1,6 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, Injectable, OnInit } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
+import { getClassName } from '@bookhistory/shared/tools';
 import { BookHistory } from './book-history.models';
-import { BookHistoryService } from './book-history.service';
+
+@Injectable()
+export class BookHistoryStore<BookHistory> extends DefaultStore<BookHistory> {
+  public constructor(
+    protected _baseDataService: BookHistoryFireListDataService<BookHistory>
+  ) {
+    super(_baseDataService);
+  }
+}
+
+@Injectable()
+export class BookHistoryFireListDataService<
+  Book
+> extends FireListBaseDataService<Book> {
+  public constructor(db: AngularFireDatabase, httpClient: HttpClient) {
+    super(getClassName(BookHistory), db, httpClient);
+  }
+}
 
 @Component({
   selector: 'app-book-history',
@@ -14,10 +35,12 @@ export class BookHistoryComponent implements OnInit {
 
   rows = 10;
 
-  constructor(private bookHistoryService: BookHistoryService) {}
+  constructor(public bookHistoryStore: BookHistoryStore<BookHistory>) {}
 
   ngOnInit() {
-    // this.bookHistoryService
+    this.bookHistoryStore.getAll();
+    // .pipe(tap(() => (this.loading = false)))
+    // .subscribe();
   }
 
   next() {

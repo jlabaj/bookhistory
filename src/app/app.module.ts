@@ -10,6 +10,16 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  BookHistoryComponent,
+  BookHistoryFireListDataService,
+  BookHistoryStore,
+} from '@bookhistory/book-history';
+import {
+  BookFireListDataService,
+  BookListComponent,
+  BookStore,
+} from '@bookhistory/book-list';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -27,9 +37,6 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BookHistoryComponent } from './components/book-history/book-history.component';
-import { BookListComponent } from './components/book-list/book-list.component';
-import { BookService } from './components/book-list/book.service';
 import { NavigationTopComponent } from './components/navigation-top/navigation-top.component';
 
 @NgModule({
@@ -66,7 +73,13 @@ import { NavigationTopComponent } from './components/navigation-top/navigation-t
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
   ],
-  providers: [BookService, MessageService],
+  providers: [
+    MessageService,
+    BookStore,
+    BookFireListDataService,
+    BookHistoryStore,
+    BookHistoryFireListDataService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

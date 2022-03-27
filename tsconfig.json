@@ -11,17 +11,25 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
+    "emitDecoratorMetadata": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "noImplicitThis": true,
     "moduleResolution": "node",
-    "importHelpers": true,
+    "noUnusedLocals": false,
     "target": "es2017",
     "module": "es2020",
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@bookhistory/shared/tools": ["src/app/shared/tools.ts"],
+      "@bookhistory/shared": ["src/app/shared/index.ts"],
+      "@bookhistory/book-list": ["src/app/components/book-list/index.ts"],
+      "@bookhistory/book-history": ["src/app/components/book-history/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
