@@ -38,7 +38,12 @@
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [filterDelay]="0"
       [globalFilterFields]="['title', 'description', 'authors']"
+      sortMode="single"
+      sortField="genre"
+      rowGroupMode="subheader"
+      groupRowsBy="genre"
       (onEditComplete)="onEditComplete($event)"
+      responsiveLayout="scroll"
     >
       <ng-template pTemplate="caption">
         <div class="table-header">
@@ -74,6 +79,9 @@
           </th>
           <th pSortableColumn="title">
             Title <p-sortIcon field="title"></p-sortIcon>
+          </th>
+          <th pSortableColumn="genre">
+            Genre <p-sortIcon field="genre"></p-sortIcon>
           </th>
           <th pSortableColumn="description">
             Description <p-sortIcon field="description"></p-sortIcon>
@@ -126,6 +134,17 @@
               pInputText
               type="text"
               (input)="
+                dt.filter($any($event.target)?.value, 'genre', 'contains')
+              "
+              placeholder="Search by Genre"
+              class="p-column-filter"
+            />
+          </th>
+          <th>
+            <input
+              pInputText
+              type="text"
+              (input)="
                 dt.filter($any($event.target)?.value, 'description', 'contains')
               "
               placeholder="Search by Description"
@@ -148,7 +167,35 @@
           <th></th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-book>
+      <ng-template
+        pTemplate="groupheader"
+        let-book
+        let-rowIndex="rowIndex"
+        let-expanded="expanded"
+      >
+        <tr pRowGroupHeader>
+          <td colspan="7">
+            <button
+              type="button"
+              pButton
+              pRipple
+              [pRowToggler]="book"
+              class="p-button-text p-button-rounded p-button-plain mr-2"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            ></button>
+            <span class="font-bold ml-2">{{ book.genre }}</span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="groupfooter" let-book>
+        <tr class="p-rowgroup-footer">
+          <td style="min-width: 80%">
+            <div style="text-align: right; width: 100%">Total Books</div>
+          </td>
+          <td style="width: 20%">{{ calculateBooksTotal(book.genre) }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-book let-rowIndex="rowIndex">
         <tr class="p-selectable-row">
           <td>
             <p-tableCheckbox [value]="book"></p-tableCheckbox>
@@ -169,6 +216,17 @@
               </ng-template>
               <ng-template pTemplate="output">
                 {{ book.title }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="book" [pEditableColumnField]="'genre'">
+            <span class="p-column-title">Genre</span>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="book.genre" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ book.genre }}
               </ng-template>
             </p-cellEditor>
           </td>
@@ -265,6 +323,20 @@
       />
       <small class="p-invalid" *ngIf="submitted && !book.title"
         >Title is required.</small
+      >
+    </div>
+    <div class="p-field">
+      <label for="genre">Genre</label>
+      <input
+        type="text"
+        pInputText
+        id="genre"
+        [(ngModel)]="book.genre"
+        required
+        autofocus
+      />
+      <small class="p-invalid" *ngIf="submitted && !book.genre"
+        >Genre is required.</small
       >
     </div>
     <div class="p-field">

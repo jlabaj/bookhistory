@@ -152,4 +152,9 @@ export class BookListComponent implements OnInit {
   clear(table: Table) {
     table.clear();
   }
+
+  calculateBooksTotal(genre: string) {
+    return this.bookStore.getStore().filter((b: Book) => b.genre === genre)
+      .length;
+  }
 }

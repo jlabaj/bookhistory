@@ -4,6 +4,7 @@ import { name } from '@bookhistory/shared/tools';
 export class Book extends EntityBase {
   isbn?: string;
   title?: string;
+  genre?: string;
   description?: string;
   publishedDate?: string;
   authors?: string[];
