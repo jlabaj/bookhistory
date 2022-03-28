@@ -92,13 +92,14 @@ export class BookListComponent implements OnInit {
     }
   }
 
-  updateBook(book: Book) {
+  updateBook(book: Book, fieldName: string = '') {
     if (book.key) {
       this.bookStore.update(book.key, book).subscribe(() => {
         this.bookHistoryStore.add({
           bookId: book.key,
+          isbn: book.isbn,
           timeOfChange: new Date().toLocaleString(),
-          change: book.title,
+          change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
         });
         this.messageService.add({
           severity: 'success',
@@ -130,7 +131,7 @@ export class BookListComponent implements OnInit {
     originalEvent: unknown;
     index: unknown;
   }): void {
-    this.updateBook(book.data);
+    this.updateBook(book.data, book.field as string);
   }
 
   formatDate(date: any) {

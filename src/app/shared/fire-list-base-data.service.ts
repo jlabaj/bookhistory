@@ -8,20 +8,6 @@ import { from, Observable } from 'rxjs';
 import { EntityBase } from './base-entities.model';
 
 export class FireListBaseDataService<T extends EntityBase> {
-  // private entityTypeName = '';
-  // private dbPath = '';
-
-  // private _entityType!: { new (): T };
-  // private get entityType(): { new (): T } {
-  //   return this._entityType;
-  // }
-
-  // private set entityType(value: { new (): T }) {
-  //   this._entityType = value;
-  //   this.entityTypeName = this.entityType.name;
-  //   this.dbPath = `/${this.entityTypeName}`
-  // }
-
   private _entityRef!: AngularFireList<T>;
   public get entityRef(): AngularFireList<T> {
     return this._entityRef;

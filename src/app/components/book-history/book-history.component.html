@@ -1,5 +1,5 @@
 <div class="card">
-  <h5>Programmatic Control</h5>
+  <!-- <h5>Programmatic Control</h5>
   <div class="mb-3">
     <p-button
       type="button"
@@ -21,12 +21,13 @@
       [disabled]="isLastPage()"
       styleClass="p-button-text"
     ></p-button>
-  </div>
+  </div> -->
   <ng-container *ngIf="bookHistoryStore.entity$ | async as booksHistory">
     <p-table
       [value]="booksHistory"
       [paginator]="true"
       [rows]="rows"
+      [loading]="loading"
       [showCurrentPageReport]="true"
       [(first)]="first"
       responsiveLayout="scroll"
@@ -37,14 +38,16 @@
         <tr>
           <th>Id</th>
           <th>Book Id</th>
+          <th>ISBN</th>
           <th>Time of change</th>
           <th>change</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-bookHistory>
         <tr>
-          <td>{{ bookHistory.id }}</td>
+          <td>{{ bookHistory.key }}</td>
           <td>{{ bookHistory.bookId }}</td>
+          <td>{{ bookHistory.isbn }}</td>
           <td>{{ bookHistory.timeOfChange }}</td>
           <td>{{ bookHistory.change }}</td>
         </tr>

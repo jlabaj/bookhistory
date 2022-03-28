@@ -3,6 +3,7 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
 import { getClassName } from '@bookhistory/shared/tools';
+import { tap } from 'rxjs';
 import { BookHistory } from './book-history.models';
 
 @Injectable()
@@ -33,31 +34,34 @@ export class BookHistoryComponent implements OnInit {
 
   rows = 10;
 
+  loading: boolean = true;
+
   constructor(public bookHistoryStore: BookHistoryStore<BookHistory>) {}
 
   ngOnInit() {
-    this.bookHistoryStore.getAll();
-    // .pipe(tap(() => (this.loading = false)))
-    // .subscribe();
+    this.bookHistoryStore
+      .getSnapshotChanges()
+      .pipe(tap(() => (this.loading = false)))
+      .subscribe();
   }
 
-  next() {
-    this.first = this.first + this.rows;
-  }
+  // next() {
+  //   this.first = this.first + this.rows;
+  // }
 
-  prev() {
-    this.first = this.first - this.rows;
-  }
+  // prev() {
+  //   this.first = this.first - this.rows;
+  // }
 
-  reset() {
-    this.first = 0;
-  }
+  // reset() {
+  //   this.first = 0;
+  // }
 
-  isLastPage(): boolean {
-    return this.bookHistoryStore.getStore()
-      ? this.first === this.bookHistoryStore.getStore().length - this.rows
-      : true;
-  }
+  // isLastPage(): boolean {
+  //   return this.bookHistoryStore.getStore()
+  //     ? this.first === this.bookHistoryStore.getStore().length - this.rows
+  //     : true;
+  // }
 
   isFirstPage(): boolean {
     return this.bookHistoryStore.getStore() ? this.first === 0 : true;

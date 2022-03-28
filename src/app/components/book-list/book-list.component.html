@@ -27,7 +27,7 @@
       #dt
       [value]="books"
       [(selection)]="selectedBooks"
-      dataKey="id"
+      dataKey="key"
       styleClass="p-datatable-customers"
       [rowHover]="true"
       [rows]="10"
@@ -68,7 +68,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 3rem"></th>
-          <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="id">Id<p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="isbn">
+            ISBN<p-sortIcon field="isbn"></p-sortIcon>
+          </th>
           <th pSortableColumn="title">
             Title <p-sortIcon field="title"></p-sortIcon>
           </th>
@@ -91,10 +94,19 @@
             <input
               pInputText
               type="text"
-              (input)="
-                dt.filter($any($event.target)?.value, 'id', 'startsWith')
-              "
+              (input)="dt.filter($any($event.target)?.key, 'key', 'startsWith')"
               placeholder="Search by Id"
+              class="p-column-filter"
+            />
+          </th>
+          <th>
+            <input
+              pInputText
+              type="text"
+              (input)="
+                dt.filter($any($event.target)?.value, 'isbn', 'startsWith')
+              "
+              placeholder="Search by ISBN"
               class="p-column-filter"
             />
           </th>
@@ -143,7 +155,11 @@
           </td>
           <td>
             <span class="p-column-title">Id</span>
-            {{ book.id }}
+            {{ book.key }}
+          </td>
+          <td>
+            <span class="p-column-title">ISBN</span>
+            {{ book.isbn }}
           </td>
           <td [pEditableColumn]="book" [pEditableColumnField]="'title'">
             <span class="p-column-title">Title</span>
@@ -224,11 +240,25 @@
 >
   <ng-template pTemplate="content">
     <div class="p-field">
-      <label for="name">Title</label>
+      <label for="name">ISBN</label>
       <input
         type="text"
         pInputText
         id="name"
+        [(ngModel)]="book.isbn"
+        required
+        autofocus
+      />
+      <small class="p-invalid" *ngIf="submitted && !book.isbn"
+        >ISBN is required.</small
+      >
+    </div>
+    <div class="p-field">
+      <label for="title">Title</label>
+      <input
+        type="text"
+        pInputText
+        id="title"
         [(ngModel)]="book.title"
         required
         autofocus
@@ -251,6 +281,7 @@
     <div class="p-field">
       <label for="publishedDate">Publish Date</label>
       <p-calendar
+        id="publishedDate"
         [(ngModel)]="book.publishedDate"
         [showButtonBar]="true"
         styleClass="p-column-filter"
@@ -260,7 +291,7 @@
       ></p-calendar>
     </div>
     <div class="p-field">
-      <label for="description">Authors</label>
+      <label for="authors">Authors</label>
       <textarea
         id="authors"
         pInputTextarea
