@@ -61,4 +61,12 @@ export class DefaultStore<T extends EntityBase>
       .subscribe(() => this.removeFromStore(key));
     return this.removeActionSource$;
   }
+
+  public deleteMultiple(keys: string[]): Observable<EntityOp> {
+    this.baseDataService
+      .deleteMultiple(keys)
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe(() => this.removeMultipleFromStore(keys));
+    return this.removeActionSource$;
+  }
 }

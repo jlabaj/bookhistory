@@ -20,10 +20,11 @@ import {
   BookListComponent,
   BookStore,
 } from '@bookhistory/book-list';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -65,6 +66,7 @@ import { NavigationTopComponent } from './components/navigation-top/navigation-t
     ToolbarModule,
     InputTextareaModule,
     CheckboxModule,
+    ConfirmDialogModule,
     FormsModule,
     HttpClientModule,
     MatToolbarModule,
@@ -77,6 +79,7 @@ import { NavigationTopComponent } from './components/navigation-top/navigation-t
   ],
   providers: [
     MessageService,
+    ConfirmationService,
     BookStore,
     BookFireListDataService,
     BookHistoryStore,

@@ -52,6 +52,20 @@ export abstract class BaseStore {
     return false;
   }
 
+  protected removeMultipleFromStore(keys?: string[]): boolean {
+    if (!keys || keys.length <= 0) return false;
+    const currentEntities = this.getStore();
+    const entitiesToDelete = this.getStore().filter(
+      (e) => keys.filter((k) => k === e.key).length > 0
+    );
+    const entities = currentEntities.filter(
+      (e) => !entitiesToDelete.includes(e)
+    );
+    this._set(entities);
+    this.removeActionSource$.next(EntityOp.DELETE);
+    return true;
+  }
+
   protected removeFromStore(key?: string): boolean {
     if (!key || key === '') return false;
     const entities = this.getStore().filter((e) => e.key !== key);

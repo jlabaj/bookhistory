@@ -11,15 +11,15 @@
         class="p-button-success p-mr-2"
         (click)="openNew()"
       ></button>
-      <!-- <button
+      <button
         pButton
         pRipple
-        [label]="Delete"
+        label="Delete"
         icon="pi pi-trash"
         class="p-button-danger"
         (click)="deleteSelectedBooks()"
         [disabled]="!selectedBooks || !selectedBooks.length"
-      ></button> -->
+      ></button>
     </ng-template>
   </p-toolbar>
   <ng-container *ngIf="bookStore.entity$ | async as books">
@@ -47,16 +47,25 @@
         (onEditComplete)="onEditComplete($event)"
       >
         <ng-template pTemplate="caption">
+          <!-- <ng-template pTemplate="left">
+            <button
+              pButton
+              label="Clear"
+              class="p-button-outlined"
+              icon="pi pi-filter-slash"
+              (click)="clear(dt)"
+            ></button>
+          </ng-template> -->
           <div class="table-header">
             List of Books
+            <button
+              pButton
+              label="Clear"
+              class="p-button-outlined"
+              icon="pi pi-filter-slash"
+              (click)="clear(dt)"
+            ></button>
             <div class="flex">
-              <button
-                pButton
-                label="Clear"
-                class="p-button-outlined"
-                icon="pi pi-filter-slash"
-                (click)="clear(dt)"
-              ></button>
               <span class="p-input-icon-left ml-auto">
                 <i class="pi pi-search"></i>
                 <input
@@ -450,3 +459,5 @@
     ></button>
   </ng-template>
 </p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

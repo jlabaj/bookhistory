@@ -14,7 +14,7 @@ export class FireListBaseDataService<T extends EntityBase> {
   }
 
   constructor(
-    entityTypeName: string,
+    private entityTypeName: string,
     private db: AngularFireDatabase,
     private http: HttpClient
   ) {
@@ -41,6 +41,13 @@ export class FireListBaseDataService<T extends EntityBase> {
 
   delete(key: string): Observable<T> {
     return from(this._entityRef.remove(key)) as unknown as Observable<T>;
+  }
+
+  deleteMultiple(keys: string[]): Observable<T> {
+    const ref = this.db.database.ref(this.entityTypeName);
+    var updates = {};
+    keys.forEach((k) => ((updates as any)[k] = null));
+    return from(ref.update(updates)) as unknown as Observable<T>;
   }
 
   deleteAll(): Observable<T> {

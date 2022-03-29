@@ -10,7 +10,11 @@ import {
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
 import { getClassName } from '@bookhistory/shared/tools';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import {
+  ConfirmationService,
+  MessageService,
+  PrimeNGConfig,
+} from 'primeng/api';
 import { Table } from 'primeng/table';
 import { tap } from 'rxjs';
 import { BookHistoryStore } from '../book-history/book-history.component';
@@ -78,6 +82,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
     public bookHistoryStore: BookHistoryStore<BookHistory>,
     private primengConfig: PrimeNGConfig,
     private messageService: MessageService,
+    private confirmationService: ConfirmationService,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -195,5 +200,27 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   calculateBooksTotal(genre: string) {
     return this.bookStore.getStore().filter((b: Book) => b.genre === genre)
       .length;
+  }
+
+  deleteSelectedBooks() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected books?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.bookStore
+          .deleteMultiple(this.selectedBooks.map((b) => b.key ?? ''))
+          .subscribe(() => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Books Deleted',
+              life: 3000,
+            });
+            this.submitted = true;
+          });
+        this.selectedBooks = [];
+      },
+    });
   }
 }
