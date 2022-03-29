@@ -4,6 +4,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
 import { getClassName } from '@bookhistory/shared/tools';
 import { tap } from 'rxjs';
+import { SubSink } from 'subsink';
 import { BookHistory } from './book-history.models';
 
 @Injectable()
@@ -36,32 +37,20 @@ export class BookHistoryComponent implements OnInit {
 
   loading: boolean = true;
 
+  private subs = new SubSink();
+
   constructor(public bookHistoryStore: BookHistoryStore<BookHistory>) {}
 
+  public ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   ngOnInit() {
-    this.bookHistoryStore
+    this.subs.sink = this.bookHistoryStore
       .getSnapshotChanges()
       .pipe(tap(() => (this.loading = false)))
       .subscribe();
   }
-
-  // next() {
-  //   this.first = this.first + this.rows;
-  // }
-
-  // prev() {
-  //   this.first = this.first - this.rows;
-  // }
-
-  // reset() {
-  //   this.first = 0;
-  // }
-
-  // isLastPage(): boolean {
-  //   return this.bookHistoryStore.getStore()
-  //     ? this.first === this.bookHistoryStore.getStore().length - this.rows
-  //     : true;
-  // }
 
   isFirstPage(): boolean {
     return this.bookHistoryStore.getStore() ? this.first === 0 : true;

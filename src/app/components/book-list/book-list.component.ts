@@ -17,6 +17,7 @@ import {
 } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { tap } from 'rxjs';
+import { SubSink } from 'subsink';
 import { BookHistoryStore } from '../book-history/book-history.component';
 import { BookHistory } from '../book-history/book-history.models';
 import { Book } from './book-list.models';
@@ -61,6 +62,8 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   displayPtable: boolean = true;
 
+  private subs = new SubSink();
+
   publishedDateSearch: string = '';
   descriptionSearch: string = '';
   genreSearch: string = '';
@@ -91,6 +94,10 @@ export class BookListComponent implements OnInit, AfterViewChecked {
     private cdRef: ChangeDetectorRef
   ) {}
 
+  public ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   ngAfterViewChecked(): void {
     if (this.dt && this.dt.expandedRowTemplate && !this.groupTemplateOn) {
       (this.dt as any).expandedRowTemplate = null;
@@ -103,7 +110,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
-    this.bookStore
+    this.subs.sink = this.bookStore
       .getSnapshotChanges()
       .pipe(tap(() => (this.loading = false)))
       .subscribe();
@@ -143,7 +150,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   updateBook(book: Book, fieldName: string = '') {
     if (book.key) {
-      this.bookStore.update(book.key, book).subscribe(() => {
+      this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
         this.bookHistoryStore.add({
           bookId: book.key,
           isbn: book.isbn,
@@ -163,7 +170,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   createBook(book: Book) {
     this.book.publishedDate = this.formatDate(book.publishedDate);
-    this.bookStore.add(book).subscribe(() => {
+    this.subs.sink = this.bookStore.add(book).subscribe(() => {
       this.messageService.add({
         severity: 'success',
         summary: 'Successful',
@@ -218,7 +225,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.bookStore
+        this.subs.sink = this.bookStore
           .deleteMultiple(this.selectedBooks.map((b) => b.key ?? ''))
           .subscribe(() => {
             this.messageService.add({
