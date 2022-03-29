@@ -30,7 +30,9 @@ export abstract class BaseStore {
   }
 
   protected addToStore(entity: EntityBase): void {
-    this.addItemToStore(entity);
+    if (entity.key && !this.getStore().find((e) => e.key === entity.key)) {
+      this.addItemToStore(entity);
+    }
     this.addActionSource$.next(EntityOp.ADD);
   }
 

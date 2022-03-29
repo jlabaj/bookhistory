@@ -30,11 +30,11 @@ export class DefaultStore<T extends EntityBase>
     this.baseDataService
       .getSnapshotChanges()
       .pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe((changes: any) =>
+      .subscribe((changes: any) => {
         this._set(
           changes.map((c: any) => ({ key: c.payload.key, ...c.payload.val() }))
-        )
-      );
+        );
+      });
     return this.entity$ as Observable<T[]>;
   }
 
@@ -42,7 +42,10 @@ export class DefaultStore<T extends EntityBase>
     this.baseDataService
       .add(entity)
       .pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe((e: any) => this.addToStore(e));
+      .subscribe((reference) => {
+        !entity.key ? (entity.key = reference.key) : null;
+        this.addToStore(entity);
+      });
     return this.addActionSource$;
   }
 
