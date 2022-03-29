@@ -34,7 +34,7 @@
         sortField="genre"
         rowGroupMode="subheader"
         groupRowsBy="genre"
-        styleClass="p-datatable-customers"
+        styleClass="p-datatable-books"
         [rowHover]="true"
         [rows]="10"
         [showCurrentPageReport]="true"
@@ -75,6 +75,7 @@
           <tr>
             <th style="width: 3rem"></th>
             <th style="width: 3rem"></th>
+            <th pSortableColumn="title"></th>
             <th pSortableColumn="id">Id<p-sortIcon field="id"></p-sortIcon></th>
             <th pSortableColumn="isbn">
               ISBN<p-sortIcon field="isbn"></p-sortIcon>
@@ -98,7 +99,8 @@
             <th style="width: 8rem"></th>
           </tr>
           <tr>
-            <th></th>
+            <th style="width: 3rem"></th>
+            <th style="width: 3rem"></th>
             <th>
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
@@ -188,9 +190,12 @@
                 class="p-column-filter"
               />
             </th>
-            <th></th>
+            <th style="width: 8rem"></th>
+            <th style="width: 8rem"></th>
           </tr>
           <tr>
+            <th style="width: 3rem"></th>
+            <th style="width: 3rem"></th>
             <th></th>
             <th></th>
             <th></th>
@@ -208,7 +213,8 @@
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
+            <th style="width: 8rem"></th>
+            <th style="width: 8rem"></th>
           </tr>
         </ng-template>
 
@@ -263,7 +269,8 @@
 
         <ng-template let-book="book" #baseBody>
           <tr class="p-selectable-row">
-            <td></td>
+            <td style="width: 3rem"></td>
+            <td style="width: 3rem"></td>
             <td>
               <p-tableCheckbox [value]="book"></p-tableCheckbox>
             </td>
@@ -351,7 +358,8 @@
                 </ng-template>
               </p-cellEditor>
             </td>
-            <td></td>
+            <td style="width: 8rem"></td>
+            <td style="width: 8rem"></td>
           </tr>
         </ng-template>
 

@@ -1,27 +1,4 @@
 <div class="card">
-  <!-- <h5>Programmatic Control</h5>
-  <div class="mb-3">
-    <p-button
-      type="button"
-      icon="pi pi-chevron-left"
-      (click)="prev()"
-      [disabled]="isFirstPage()"
-      styleClass="p-button-text"
-    ></p-button>
-    <p-button
-      type="button"
-      icon="pi pi-refresh"
-      (click)="reset()"
-      styleClass="p-button-text"
-    ></p-button>
-    <p-button
-      type="button"
-      icon="pi pi-chevron-right"
-      (click)="next()"
-      [disabled]="isLastPage()"
-      styleClass="p-button-text"
-    ></p-button>
-  </div> -->
   <ng-container *ngIf="bookHistoryStore.entity$ | async as booksHistory">
     <p-table
       [value]="booksHistory"
@@ -36,11 +13,19 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>Id</th>
-          <th>Book Id</th>
-          <th>ISBN</th>
-          <th>Time of change</th>
-          <th>change</th>
+          <th pSortableColumn="key">Id<p-sortIcon field="key"></p-sortIcon></th>
+          <th pSortableColumn="bookId">
+            Book Id <p-sortIcon field="bookId"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isbn">
+            ISBN <p-sortIcon field="isbn"></p-sortIcon>
+          </th>
+          <th pSortableColumn="timeOfChange">
+            Time of change <p-sortIcon field="timeOfChange"></p-sortIcon>
+          </th>
+          <th pSortableColumn="change">
+            Change <p-sortIcon field="change"></p-sortIcon>
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-bookHistory>
