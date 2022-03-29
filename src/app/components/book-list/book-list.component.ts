@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {
   AfterViewChecked,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Injectable,
@@ -45,7 +44,7 @@ export class BookFireListDataService<
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
   styleUrls: ['./book-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookListComponent implements OnInit, AfterViewChecked {
   @ViewChild('dt') dt!: Table;
@@ -65,6 +64,8 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   displayPtable: boolean = true;
 
   private subs = new SubSink();
+
+  bookEditInit!: Book;
 
   getSnapshotChangesSubscription?: Subscription;
 
@@ -156,22 +157,26 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   updateBook(book: Book, fieldName: string = '') {
     if (book.key) {
-      this.subs.unsubscribe();
-      this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
-        this.bookHistoryStore.add({
-          bookId: book.key,
-          isbn: book.isbn,
-          timeOfChange: new Date().toLocaleString(),
-          change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
+      const valueChanged =
+        (this.bookEditInit as any)[fieldName] !== (book as any)[fieldName];
+      if (valueChanged) {
+        this.subs.unsubscribe();
+        this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
+          this.bookHistoryStore.add({
+            bookId: book.key,
+            isbn: book.isbn,
+            timeOfChange: new Date().toLocaleString(),
+            change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
+          });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Book Updated',
+            life: 3000,
+          });
+          this.submitted = true;
         });
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Book Updated',
-          life: 3000,
-        });
-        this.submitted = true;
-      });
+      }
     }
   }
 
@@ -196,6 +201,10 @@ export class BookListComponent implements OnInit, AfterViewChecked {
     index: unknown;
   }): void {
     this.updateBook(book.data, book.field as string);
+  }
+
+  onEditInit(book: { data: Book }): void {
+    this.bookEditInit = JSON.parse(JSON.stringify(book.data));
   }
 
   formatDate(date: any) {

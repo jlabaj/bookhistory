@@ -45,6 +45,7 @@
         [filterDelay]="0"
         [globalFilterFields]="['title', 'description', 'authors']"
         (onEditComplete)="onEditComplete($event)"
+        (onEditInit)="onEditInit($event)"
       >
         <ng-template pTemplate="caption">
           <div class="table-header">
@@ -233,7 +234,7 @@
           let-expanded="expanded"
         >
           <tr>
-            <td colspan="9">
+            <td colspan="12">
               <button
                 type="button"
                 pButton
@@ -308,11 +309,14 @@
               <span class="p-column-title">Description</span>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input
-                    pInputText
-                    type="text"
+                  <textarea
+                    id="authors"
+                    pInputTextarea
                     [(ngModel)]="book.description"
-                  />
+                    required
+                    rows="3"
+                    cols="20"
+                  ></textarea>
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ book.description }}
