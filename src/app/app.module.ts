@@ -23,6 +23,7 @@ import {
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -63,6 +64,7 @@ import { NavigationTopComponent } from './components/navigation-top/navigation-t
     ProgressBarModule,
     ToolbarModule,
     InputTextareaModule,
+    CheckboxModule,
     FormsModule,
     HttpClientModule,
     MatToolbarModule,

@@ -1,5 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Injectable, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  Injectable,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
 import { getClassName } from '@bookhistory/shared/tools';
@@ -33,7 +40,12 @@ export class BookFireListDataService<
   templateUrl: './book-list.component.html',
   styleUrls: ['./book-list.component.scss'],
 })
-export class BookListComponent implements OnInit {
+export class BookListComponent implements OnInit, AfterViewChecked {
+  @ViewChild('dt') dt: any;
+  table!: Table;
+
+  public groupTemplateOn: boolean = false;
+
   bookDialog!: boolean;
 
   book!: Book;
@@ -44,14 +56,41 @@ export class BookListComponent implements OnInit {
 
   loading: boolean = true;
 
-  @ViewChild('dt') table!: Table;
+  displayPtable: boolean = true;
+
+  _genreGroupingChecked: boolean = false;
+  public get genreGroupingChecked(): boolean {
+    return this._genreGroupingChecked;
+  }
+
+  //hack to switch table display mode from list to grouping in primeng
+  public set genreGroupingChecked(value: boolean) {
+    this._genreGroupingChecked = value;
+    this.groupTemplateOn = value;
+    this.displayPtable = false;
+    setTimeout(() => {
+      this.displayPtable = true;
+    }, 0);
+  }
 
   constructor(
     public bookStore: BookStore<Book>,
     public bookHistoryStore: BookHistoryStore<BookHistory>,
     private primengConfig: PrimeNGConfig,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cdRef: ChangeDetectorRef
   ) {}
+
+  ngAfterViewChecked(): void {
+    if (this.dt && this.dt.expandedRowTemplate && !this.groupTemplateOn) {
+      this.dt.expandedRowTemplate = null;
+      this.displayPtable = false;
+      setTimeout(() => {
+        this.displayPtable = true;
+      }, 0);
+      this.cdRef.detectChanges();
+    }
+  }
 
   ngOnInit() {
     this.bookStore
