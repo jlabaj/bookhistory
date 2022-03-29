@@ -47,15 +47,6 @@
         (onEditComplete)="onEditComplete($event)"
       >
         <ng-template pTemplate="caption">
-          <!-- <ng-template pTemplate="left">
-            <button
-              pButton
-              label="Clear"
-              class="p-button-outlined"
-              icon="pi pi-filter-slash"
-              (click)="clear(dt)"
-            ></button>
-          </ng-template> -->
           <div class="table-header">
             List of Books
             <button
@@ -83,6 +74,7 @@
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 3rem"></th>
+            <th style="width: 3rem"></th>
             <th pSortableColumn="id">Id<p-sortIcon field="id"></p-sortIcon></th>
             <th pSortableColumn="isbn">
               ISBN<p-sortIcon field="isbn"></p-sortIcon>
@@ -102,6 +94,7 @@
             <th pSortableColumn="authors">
               Authors <p-sortIcon field="authors"></p-sortIcon>
             </th>
+            <th style="width: 8rem"></th>
             <th style="width: 8rem"></th>
           </tr>
           <tr>
@@ -124,6 +117,7 @@
               <input
                 pInputText
                 type="text"
+                [(ngModel)]="isbnSearch"
                 (input)="
                   dt.filter($any($event.target)?.value, 'isbn', 'startsWith')
                 "
@@ -135,6 +129,7 @@
               <input
                 pInputText
                 type="text"
+                [(ngModel)]="titleSearch"
                 (input)="
                   dt.filter($any($event.target)?.value, 'title', 'contains')
                 "
@@ -146,6 +141,7 @@
               <input
                 pInputText
                 type="text"
+                [ngModel]="genreSearch"
                 (input)="
                   dt.filter($any($event.target)?.value, 'genre', 'contains')
                 "
@@ -157,6 +153,7 @@
               <input
                 pInputText
                 type="text"
+                [(ngModel)]="descriptionSearch"
                 (input)="
                   dt.filter(
                     $any($event.target)?.value,
@@ -170,14 +167,26 @@
             </th>
             <th>
               <p-calendar
+                [(ngModel)]="publishedDateSearch"
                 (onSelect)="onDateSelect($event)"
                 (onClearClick)="dt.filter('', 'publishedDate', 'equals')"
                 [showButtonBar]="true"
                 styleClass="p-column-filter"
                 placeholder="Publish Date"
                 [readonlyInput]="true"
-                dateFormat="yy-mm-dd"
+                dateFormat="dd.mm.yy"
               ></p-calendar>
+            </th>
+            <th>
+              <input
+                pInputText
+                type="text"
+                (input)="
+                  dt.filter($any($event.target)?.value, 'authors', 'contains')
+                "
+                placeholder="Search by Authors"
+                class="p-column-filter"
+              />
             </th>
             <th></th>
           </tr>
@@ -254,6 +263,7 @@
 
         <ng-template let-book="book" #baseBody>
           <tr class="p-selectable-row">
+            <td></td>
             <td>
               <p-tableCheckbox [value]="book"></p-tableCheckbox>
             </td>
@@ -315,7 +325,7 @@
                     styleClass="p-column-filter"
                     placeholder="Publish Date"
                     [readonlyInput]="true"
-                    dateFormat="yy-mm-dd"
+                    dateFormat="dd.mm.yy"
                   ></p-calendar>
                 </ng-template>
                 <ng-template pTemplate="output">
@@ -341,6 +351,7 @@
                 </ng-template>
               </p-cellEditor>
             </td>
+            <td></td>
           </tr>
         </ng-template>
 
@@ -420,11 +431,12 @@
       <p-calendar
         id="publishedDate"
         [(ngModel)]="book.publishedDate"
+        appendTo="body"
         [showButtonBar]="true"
         styleClass="p-column-filter"
         placeholder="Publish Date"
         [readonlyInput]="true"
-        dateFormat="yy-mm-dd"
+        dateFormat="dd.mm.yy"
       ></p-calendar>
     </div>
     <div class="p-field">

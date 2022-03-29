@@ -45,8 +45,7 @@ export class BookFireListDataService<
   styleUrls: ['./book-list.component.scss'],
 })
 export class BookListComponent implements OnInit, AfterViewChecked {
-  @ViewChild('dt') dt: any;
-  table!: Table;
+  @ViewChild('dt') dt!: Table;
 
   public groupTemplateOn: boolean = false;
 
@@ -61,6 +60,12 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   loading: boolean = true;
 
   displayPtable: boolean = true;
+
+  publishedDateSearch: string = '';
+  descriptionSearch: string = '';
+  genreSearch: string = '';
+  titleSearch: string = '';
+  isbnSearch: string = '';
 
   _genreGroupingChecked: boolean = false;
   public get genreGroupingChecked(): boolean {
@@ -88,7 +93,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (this.dt && this.dt.expandedRowTemplate && !this.groupTemplateOn) {
-      this.dt.expandedRowTemplate = null;
+      (this.dt as any).expandedRowTemplate = null;
       this.displayPtable = false;
       setTimeout(() => {
         this.displayPtable = true;
@@ -107,7 +112,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   }
 
   onDateSelect(value: any) {
-    this.table.filter(this.formatDate(value), 'date', 'equals');
+    this.dt.filter(this.formatDate(value), 'publishedDate', 'equals');
   }
 
   openNew() {
@@ -190,11 +195,16 @@ export class BookListComponent implements OnInit, AfterViewChecked {
       day = '0' + day;
     }
 
-    return date.getFullYear() + '-' + month + '-' + day;
+    return `${day}.${month}.${date.getFullYear()}`;
   }
 
   clear(table: Table) {
     table.clear();
+    this.publishedDateSearch = '';
+    this.descriptionSearch = '';
+    this.genreSearch = '';
+    this.titleSearch = '';
+    this.isbnSearch = '';
   }
 
   calculateBooksTotal(genre: string) {
