@@ -1,0 +1,28 @@
+{
+  "root": "apps/navigationtop-e2e",
+  "sourceRoot": "apps/navigationtop-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/navigationtop-e2e/cypress.json",
+        "devServerTarget": "navigationtop:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "navigationtop:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/navigationtop-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["navigationtop"]
+}

@@ -1,0 +1,28 @@
+{
+  "root": "apps/bookhistory-e2e",
+  "sourceRoot": "apps/bookhistory-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/bookhistory-e2e/cypress.json",
+        "devServerTarget": "bookhistory:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "bookhistory:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/bookhistory-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["bookhistory"]
+}

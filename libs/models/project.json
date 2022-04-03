@@ -1,0 +1,42 @@
+{
+  "projectType": "library",
+  "root": "libs/models",
+  "sourceRoot": "libs/models/src",
+  "prefix": "bookhistory",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/models"],
+      "options": {
+        "project": "libs/models/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/models/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/models/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/models"],
+      "options": {
+        "jestConfig": "libs/models/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/models/src/**/*.ts",
+          "libs/models/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

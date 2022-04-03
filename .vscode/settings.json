@@ -18,9 +18,9 @@
       "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true,
-        "source.organizeImports": true
+        "source.organizeImports": false
       },
-      "editor.formatOnSave": true
+      "editor.formatOnSave": false
     },
     "[json]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",

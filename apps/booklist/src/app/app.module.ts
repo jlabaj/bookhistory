@@ -1,0 +1,40 @@
+/*
+ * This RemoteEntryModule is imported here to allow TS to find the Module during
+ * compilation, allowing it to be included in the built bundle. This is required
+ * for the Module Federation Plugin to expose the Module correctly.
+ * */
+// @ts-ignore
+import { loadRemoteModule } from '@angular-architects/module-federation';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { BookListModule } from './book-list/book-list.module';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(
+      [
+        {
+          path: '',
+          // outlet: 'maincontainer',
+          loadChildren: () =>
+            loadRemoteModule({
+              type: 'module',
+              remoteEntry: 'http://localhost:4201/remoteEntry.js',
+              exposedModule: './Module',
+            }).then((m: any) => m.BookListModule),
+        },
+      ],
+      { initialNavigation: 'enabledBlocking' }
+    ),
+
+    // RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
+    // BookListModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
