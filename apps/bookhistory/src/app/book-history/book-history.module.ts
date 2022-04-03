@@ -47,9 +47,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    // RouterModule.forChild([], { initialNavigation: 'enabledBlocking' }),
     BrowserModule,
-    BrowserAnimationsModule,
     TableModule,
     CalendarModule,
     SliderModule,

@@ -4,7 +4,6 @@
  * for the Module Federation Plugin to expose the Module correctly.
  * */
 // @ts-ignore
-import { loadRemoteModule } from '@angular-architects/module-federation';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -15,24 +14,9 @@ import { BookListModule } from './book-list/book-list.module';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(
-      [
-        {
-          path: '',
-          // outlet: 'maincontainer',
-          loadChildren: () =>
-            loadRemoteModule({
-              type: 'module',
-              remoteEntry: 'http://localhost:4201/remoteEntry.js',
-              exposedModule: './Module',
-            }).then((m: any) => m.BookListModule),
-        },
-      ],
-      { initialNavigation: 'enabledBlocking' }
-    ),
 
-    // RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
-    // BookListModule,
+    RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
+    BookListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

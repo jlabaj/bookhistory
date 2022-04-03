@@ -47,7 +47,13 @@ module.exports = {
       name: 'navigationtop',
       filename: 'remoteEntry.js',
       exposes: {
-        './Module': 'apps/navigationtop/src/app/navigation-top/navigation-top.module.ts',
+        './Module':
+          'apps/navigationtop/src/app/navigation-top/navigation-top.module.ts',
+      },
+      remotes: {
+        booklist: 'http://localhost:4201/remoteEntry.js',
+        bookhistory: 'http://localhost:4202/remoteEntry.js',
+        navigationtop: 'http://localhost:4203/remoteEntry.js',
       },
       shared: share({
         '@angular/core': {
@@ -85,13 +91,13 @@ module.exports = {
           strictVersion: true,
           requiredVersion: 'auto',
           includeSecondaries: true,
-        },        
+        },
         '@angular/material/toolbar': {
           singleton: true,
           strictVersion: true,
           requiredVersion: 'auto',
           includeSecondaries: true,
-        },        
+        },
         ...sharedMappings.getDescriptors(),
       }),
       library: {

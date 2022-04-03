@@ -22,7 +22,6 @@ import { AppComponent } from './app.component';
         },
         {
           path: 'books',
-          // outlet: 'maincontainer',
           loadChildren: () =>
             loadRemoteModule({
               type: 'module',
@@ -39,22 +38,6 @@ import { AppComponent } from './app.component';
               exposedModule: './Module',
             }).then((m: any) => m.BookHistoryModule),
         },
-        // {
-        //   path: 'books',
-        //   loadChildren: () =>
-        //     import('booklist/Module').then((m) => m.RemoteEntryModule),
-        // },
-        // {
-        //   path: 'history',
-        //   loadChildren: () =>
-        //     import('bookhistory/Module').then((m) => m.RemoteEntryModule),
-        // },
-        // {
-        //   path: '',
-        //   outlet: 'topbar',
-        //   loadChildren: () =>
-        //     import('navigationtop/Module').then((m) => m.RemoteEntryModule),
-        // },
       ],
       { initialNavigation: 'enabledBlocking' }
     ),
