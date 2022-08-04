@@ -1,26 +1,25 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import {
-  AfterViewChecked,
-  ChangeDetectorRef,
-  Component,
-  Injectable,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
 import { getClassName } from '@bookhistory/shared/tools';
 import {
   ConfirmationService,
   MessageService,
-  PrimeNGConfig,
+  PrimeNGConfig
 } from 'primeng/api';
-import { Table } from 'primeng/table';
-import { Subscription } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { SubSink } from 'subsink';
 import { BookHistoryStore } from '../book-history/book-history.component';
 import { BookHistory } from '../book-history/book-history.models';
 import { Book } from './book-list.models';
+import { ConfirmationDialog } from './confirmation-dialog.component';
+
 
 @Injectable()
 export class BookStore<Book> extends DefaultStore<Book> {
@@ -46,10 +45,13 @@ export class BookFireListDataService<
   styleUrls: ['./book-list.component.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BookListComponent implements OnInit, AfterViewChecked {
-  @ViewChild('dt') dt!: Table;
+export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
+  displayedColumns: string[] = ['select', 'key', 'isbn', 'title', 'genre', 'description', 'publishedDate', 'authors'];
+  selection = new SelectionModel<Book>(true, []);
+  dataSource: MatTableDataSource<Book> = new MatTableDataSource<Book>();
 
-  public groupTemplateOn: boolean = false;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   bookDialog!: boolean;
 
@@ -59,36 +61,9 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   selectedBooks!: Book[];
 
-  loading: boolean = true;
-
-  displayPtable: boolean = true;
-
   private subs = new SubSink();
 
-  bookEditInit!: Book;
-
-  getSnapshotChangesSubscription?: Subscription;
-
-  publishedDateSearch: string = '';
-  descriptionSearch: string = '';
-  genreSearch: string = '';
-  titleSearch: string = '';
-  isbnSearch: string = '';
-
-  _genreGroupingChecked: boolean = false;
-  public get genreGroupingChecked(): boolean {
-    return this._genreGroupingChecked;
-  }
-
-  //hack to switch table display mode from list to grouping in primeng
-  public set genreGroupingChecked(value: boolean) {
-    this._genreGroupingChecked = value;
-    this.groupTemplateOn = value;
-    this.displayPtable = false;
-    setTimeout(() => {
-      this.displayPtable = true;
-    }, 0);
-  }
+  public booksAsMatTableDataSource$!: Observable<MatTableDataSource<Book>>;
 
   constructor(
     public bookStore: BookStore<Book>,
@@ -96,166 +71,192 @@ export class BookListComponent implements OnInit, AfterViewChecked {
     private primengConfig: PrimeNGConfig,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private cdRef: ChangeDetectorRef
-  ) {}
+    private cdRef: ChangeDetectorRef,
+    public dialog: MatDialog,
+  ) {
+  }
 
   public ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  ngAfterViewChecked(): void {
-    if (this.dt && this.dt.expandedRowTemplate && !this.groupTemplateOn) {
-      (this.dt as any).expandedRowTemplate = null;
-      this.displayPtable = false;
-      setTimeout(() => {
-        this.displayPtable = true;
-      }, 0);
-      this.cdRef.detectChanges();
-    }
-  }
-
   ngOnInit() {
-    this.getSnapshotChangesSubscription
-      ? this.getSnapshotChangesSubscription.unsubscribe
-      : null;
-    this.getSnapshotChangesSubscription = this.bookStore
-      .getSnapshotChanges()
-      .subscribe(() => (this.loading = false));
 
-    this.primengConfig.ripple = true;
+    this.booksAsMatTableDataSource$ =
+    this.bookStore
+      .getSnapshotChanges().pipe(
+      map(books => {
+        const dataSource = this.dataSource;
+        dataSource.data = books;
+        return dataSource;
+    }));
+  }  
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
-  onDateSelect(value: any) {
-    this.dt.filter(this.formatDate(value), 'publishedDate', 'equals');
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   openNew() {
-    this.book = {};
-    this.submitted = false;
-    this.bookDialog = true;
-  }
-
-  hideDialog() {
-    this.bookDialog = false;
-    this.submitted = false;
-  }
-
-  saveBook() {
-    this.submitted = true;
-
-    if (this.book.title?.trim()) {
-      if (this.book.key) {
-        this.updateBook(this.book);
-      } else {
-        this.createBook(this.book);
+        this.book = {};
+        this.submitted = false;
+        this.bookDialog = true;
       }
 
-      this.bookDialog = false;
-      this.book = {};
-    }
+  openDialog(): void {
+    this.dialog.open(ConfirmationDialog, {
+      width: '250px',
+    } as MatDialogConfig);
   }
+    
+  // hideDialog() {
+  //   this.bookDialog = false;
+  //   this.submitted = false;
+  // }
 
-  updateBook(book: Book, fieldName: string = '') {
-    if (book.key) {
-      const valueChanged =
-        (this.bookEditInit as any)[fieldName] !== (book as any)[fieldName];
-      if (valueChanged) {
-        this.subs.unsubscribe();
-        this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
-          this.bookHistoryStore.add({
-            bookId: book.key,
-            isbn: book.isbn,
-            timeOfChange: new Date().toLocaleString(),
-            change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
-          });
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Book Updated',
-            life: 3000,
-          });
-          this.submitted = true;
-        });
-      }
-    }
-  }
+  // saveBook() {
+  //   this.submitted = true;
 
-  createBook(book: Book) {
-    this.subs.unsubscribe();
-    this.book.publishedDate = this.formatDate(book.publishedDate);
-    this.subs.sink = this.bookStore.add(book).subscribe(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Successful',
-        detail: 'Book Created',
-        life: 3000,
-      });
-      this.submitted = true;
-    });
-  }
+  //   if (this.book.title?.trim()) {
+  //     if (this.book.key) {
+  //       this.updateBook(this.book);
+  //     } else {
+  //       this.createBook(this.book);
+  //     }
 
-  onEditComplete(book: {
-    field: unknown;
-    data: Book;
-    originalEvent: unknown;
-    index: unknown;
-  }): void {
-    this.updateBook(book.data, book.field as string);
-  }
+  //     this.bookDialog = false;
+  //     this.book = {};
+  //   }
+  // }
 
-  onEditInit(book: { data: Book }): void {
-    this.bookEditInit = JSON.parse(JSON.stringify(book.data));
-  }
+  // updateBook(book: Book, fieldName: string = '') {
+  //   if (book.key) {
+  //     const valueChanged =
+  //       (this.bookEditInit as any)[fieldName] !== (book as any)[fieldName];
+  //     if (valueChanged) {
+  //       this.subs.unsubscribe();
+  //       this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
+  //         this.bookHistoryStore.add({
+  //           bookId: book.key,
+  //           isbn: book.isbn,
+  //           timeOfChange: new Date().toLocaleString(),
+  //           change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
+  //         });
+  //         this.messageService.add({
+  //           severity: 'success',
+  //           summary: 'Successful',
+  //           detail: 'Book Updated',
+  //           life: 3000,
+  //         });
+  //         this.submitted = true;
+  //       });
+  //     }
+  //   }
+  // }
 
-  formatDate(date: any) {
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
+  // createBook(book: Book) {
+  //   this.subs.unsubscribe();
+  //   this.book.publishedDate = this.formatDate(book.publishedDate);
+  //   this.subs.sink = this.bookStore.add(book).subscribe(() => {
+  //     this.messageService.add({
+  //       severity: 'success',
+  //       summary: 'Successful',
+  //       detail: 'Book Created',
+  //       life: 3000,
+  //     });
+  //     this.submitted = true;
+  //   });
+  // }
 
-    if (month < 10) {
-      month = '0' + month;
-    }
+  // onEditComplete(book: {
+  //   field: unknown;
+  //   data: Book;
+  //   originalEvent: unknown;
+  //   index: unknown;
+  // }): void {
+  //   this.updateBook(book.data, book.field as string);
+  // }
 
-    if (day < 10) {
-      day = '0' + day;
-    }
+  // onEditInit(book: { data: Book }): void {
+  //   this.bookEditInit = JSON.parse(JSON.stringify(book.data));
+  // }
 
-    return `${day}.${month}.${date.getFullYear()}`;
-  }
+  // formatDate(date: any) {
+  //   let month = date.getMonth() + 1;
+  //   let day = date.getDate();
 
-  clear(table: Table) {
-    table.clear();
-    this.publishedDateSearch = '';
-    this.descriptionSearch = '';
-    this.genreSearch = '';
-    this.titleSearch = '';
-    this.isbnSearch = '';
-  }
+  //   if (month < 10) {
+  //     month = '0' + month;
+  //   }
 
-  calculateBooksTotal(genre: string) {
-    return this.bookStore.getStore().filter((b: Book) => b.genre === genre)
-      .length;
-  }
+  //   if (day < 10) {
+  //     day = '0' + day;
+  //   }
+
+  //   return `${day}.${month}.${date.getFullYear()}`;
+  // }
+
+  // clear(table: Table) {
+  //   table.clear();
+  //   this.publishedDateSearch = '';
+  //   this.descriptionSearch = '';
+  //   this.genreSearch = '';
+  //   this.titleSearch = '';
+  //   this.isbnSearch = '';
+  // }
+
+  // calculateBooksTotal(genre: string) {
+  //   return this.bookStore.getStore().filter((b: Book) => b.genre === genre)
+  //     .length;
+  // }
 
   deleteSelectedBooks() {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected books?',
-      header: 'Confirm',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.subs.unsubscribe();
-        this.subs.sink = this.bookStore
-          .deleteMultiple(this.selectedBooks.map((b) => b.key ?? ''))
-          .subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Successful',
-              detail: 'Books Deleted',
-              life: 3000,
-            });
-            this.submitted = true;
-          });
-        this.selectedBooks = [];
-      },
-    });
+    this.openDialog();
+    // this.confirmationService.confirm({
+    //   message: 'Are you sure you want to delete the selected books?',
+    //   header: 'Confirm',
+    //   icon: 'pi pi-exclamation-triangle',
+    //   accept: () => {
+    //     this.subs.unsubscribe();
+    //     this.subs.sink = this.bookStore
+    //       .deleteMultiple(this.selectedBooks.map((b) => b.key ?? ''))
+    //       .subscribe(() => {
+    //         this.messageService.add({
+    //           severity: 'success',
+    //           summary: 'Successful',
+    //           detail: 'Books Deleted',
+    //           life: 3000,
+    //         });
+    //         this.submitted = true;
+    //       });
+    //     this.selectedBooks = [];
+    //   },
+    // });
   }
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+    
 }

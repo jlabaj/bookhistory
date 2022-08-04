@@ -3,12 +3,12 @@ import { SharedModule } from '../shared/shared.module';
 import {
   BookHistoryComponent,
   BookHistoryFireListDataService,
-  BookHistoryStore,
+  BookHistoryStore
 } from './book-history';
 import {
   BookFireListDataService,
   BookListComponent,
-  BookStore,
+  BookStore
 } from './book-list';
 import { NavigationTopComponent } from './navigation-top/navigation-top.component';
 

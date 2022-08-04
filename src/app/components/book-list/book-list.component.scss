@@ -1,119 +1,61 @@
 :host ::ng-deep {
-  .p-rowgroup-footer td {
-    font-weight: 700;
+  table {
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  td, th {
+    width: 25%;
+  }  
+
+  .mat-column-key {
+    width: 10% !important;
   }
 
-  .p-rowgroup-header {
-    span {
-      font-weight: 700;
-    }
-
-    .p-row-toggler {
-      vertical-align: middle;
-      margin-right: 0.25rem;
-    }
+  .mat-column-isbn {
+    width: 10% !important;
   }
 
-  .p-paginator {
-    .p-paginator-current {
-      margin-left: auto;
-    }
+  .mat-column-title {
+    width: 10% !important;
+  }
+  
+  .mat-column-genre {
+    width: 5% !important;
   }
 
-  .p-progressbar {
-    height: 0.5rem;
-    background-color: #d8dadc;
-
-    .p-progressbar-value {
-      background-color: #607d8b;
-    }
+  .mat-column-description {
+    width: 45% !important;
+  }
+  
+  .mat-column-publishedDate {
+    width: 10% !important;
   }
 
-  .table-header {
-    display: flex;
-    justify-content: space-between;
+  .mat-column-authors {
+    width: 10% !important;
   }
 
-  .p-calendar .p-datepicker {
-    min-width: 25rem;
-
-    td {
-      font-weight: 400;
-    }
-  }
-
-  .p-datatable.p-datatable-books {
-    .p-datatable-header {
-      text-align: left;
-      font-size: 1.5rem;
-      background: #f8f9fa;
-      color: #343a40;
-      border: 1px solid #dee2e6;
-      border-width: 1px 0 1px 0;
-      padding: 1rem 1rem;
-      font-weight: 700;
-    }
-
-    .p-paginator {
-      padding: 1rem;
-    }
-
-    .p-datatable-thead > tr > th {
-      background: #f8f9fa;
-      text-align: left;
-    }
-
-    .p-datatable-tbody > tr > td {
-      cursor: auto;
-    }
-
-    .p-dropdown-label:not(.p-placeholder) {
-      text-transform: uppercase;
-    }
-  }
-
-  /* Responsive */
-  .p-datatable-books .p-datatable-tbody > tr > td .p-column-title {
-    display: none;
-  }
 }
 
 @media screen and (max-width: 960px) {
   :host ::ng-deep {
-    .p-datatable {
-      &.p-datatable-books {
-        max-width: 960px !important;
-        .p-datatable-thead > tr > th,
-        .p-datatable-tfoot > tr > td {
-          display: none !important;
-        }
-
-        .p-datatable-tbody > tr {
-          border-bottom: 1px solid var(--layer-2);
-
-          > td {
-            text-align: left;
-            display: block;
-            border: 0 none !important;
-            width: 100% !important;
-            float: left;
-            clear: left;
-            border: 0 none;
-
-            .p-column-title {
-              padding: 0.4rem;
-              min-width: 30%;
-              display: inline-block;
-              margin: -0.4rem 1rem -0.4rem -0.4rem;
-              font-weight: bold;
-            }
-
-            .p-progressbar {
-              margin-top: 0.5rem;
-            }
-          }
-        }
-      }
+    table {
+      width: 100%;
     }
+    
+    .mat-form-field {
+      font-size: 14px;
+      width: 100%;
+    }
+    
+    td, th {
+      width: 25%;
+    }
+    
   }
 }

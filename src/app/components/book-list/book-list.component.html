@@ -1,487 +1,105 @@
-<p-toast></p-toast>
 
-<div class="card">
-  <p-toolbar styleClass="p-mb-4">
-    <ng-template pTemplate="left">
-      <button
-        pButton
-        pRipple
-        label="New"
-        icon="pi pi-plus"
-        class="p-button-success p-mr-2"
-        (click)="openNew()"
-      ></button>
-      <button
-        pButton
-        pRipple
-        label="Delete"
-        icon="pi pi-trash"
-        class="p-button-danger"
-        (click)="deleteSelectedBooks()"
-        [disabled]="!selectedBooks || !selectedBooks.length"
-      ></button>
-    </ng-template>
-  </p-toolbar>
-  <ng-container *ngIf="bookStore.entity$ | async as books">
-    <ng-container *ngIf="displayPtable">
-      <p-table
-        #dt
-        [value]="books"
-        [(selection)]="selectedBooks"
-        expandableRows="true"
-        [dataKey]="groupTemplateOn ? 'genre' : 'key'"
-        sortMode="single"
-        sortField="genre"
-        rowGroupMode="subheader"
-        groupRowsBy="genre"
-        styleClass="p-datatable-books"
-        [rowHover]="true"
-        [rows]="10"
-        [showCurrentPageReport]="true"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="loading"
-        [paginator]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [filterDelay]="0"
-        [globalFilterFields]="['title', 'description', 'authors']"
-        (onEditComplete)="onEditComplete($event)"
-        (onEditInit)="onEditInit($event)"
-      >
-        <ng-template pTemplate="caption">
-          <div class="table-header">
-            List of Books
-            <button
-              pButton
-              label="Clear"
-              class="p-button-outlined"
-              icon="pi pi-filter-slash"
-              (click)="clear(dt)"
-            ></button>
-            <div class="flex">
-              <span class="p-input-icon-left ml-auto">
-                <i class="pi pi-search"></i>
-                <input
-                  pInputText
-                  type="text"
-                  (input)="
-                    dt.filterGlobal($any($event.target)?.value, 'contains')
-                  "
-                  placeholder="Global Search"
-                />
-              </span>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 3rem"></th>
-            <th style="width: 3rem"></th>
-            <th pSortableColumn="title"></th>
-            <th pSortableColumn="id">Id<p-sortIcon field="id"></p-sortIcon></th>
-            <th pSortableColumn="isbn">
-              ISBN<p-sortIcon field="isbn"></p-sortIcon>
-            </th>
-            <th pSortableColumn="title">
-              Title <p-sortIcon field="title"></p-sortIcon>
-            </th>
-            <th pSortableColumn="genre">
-              Genre <p-sortIcon field="genre"></p-sortIcon>
-            </th>
-            <th pSortableColumn="description">
-              Description <p-sortIcon field="description"></p-sortIcon>
-            </th>
-            <th pSortableColumn="publishedDate">
-              publishedDate <p-sortIcon field="publishedDate"></p-sortIcon>
-            </th>
-            <th pSortableColumn="authors">
-              Authors <p-sortIcon field="authors"></p-sortIcon>
-            </th>
-            <th style="width: 8rem"></th>
-            <th style="width: 8rem"></th>
-          </tr>
-          <tr>
-            <th style="width: 3rem"></th>
-            <th style="width: 3rem"></th>
-            <th>
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th>
-              <input
-                pInputText
-                type="text"
-                (input)="
-                  dt.filter($any($event.target)?.key, 'key', 'startsWith')
-                "
-                placeholder="Search by Id"
-                class="p-column-filter"
-              />
-            </th>
-            <th>
-              <input
-                pInputText
-                type="text"
-                [(ngModel)]="isbnSearch"
-                (input)="
-                  dt.filter($any($event.target)?.value, 'isbn', 'startsWith')
-                "
-                placeholder="Search by ISBN"
-                class="p-column-filter"
-              />
-            </th>
-            <th>
-              <input
-                pInputText
-                type="text"
-                [(ngModel)]="titleSearch"
-                (input)="
-                  dt.filter($any($event.target)?.value, 'title', 'contains')
-                "
-                placeholder="Search by Title"
-                class="p-column-filter"
-              />
-            </th>
-            <th>
-              <input
-                pInputText
-                type="text"
-                [ngModel]="genreSearch"
-                (input)="
-                  dt.filter($any($event.target)?.value, 'genre', 'contains')
-                "
-                placeholder="Search by Genre"
-                class="p-column-filter"
-              />
-            </th>
-            <th>
-              <input
-                pInputText
-                type="text"
-                [(ngModel)]="descriptionSearch"
-                (input)="
-                  dt.filter(
-                    $any($event.target)?.value,
-                    'description',
-                    'contains'
-                  )
-                "
-                placeholder="Search by Description"
-                class="p-column-filter"
-              />
-            </th>
-            <th>
-              <p-calendar
-                [(ngModel)]="publishedDateSearch"
-                (onSelect)="onDateSelect($event)"
-                (onClearClick)="dt.filter('', 'publishedDate', 'equals')"
-                [showButtonBar]="true"
-                styleClass="p-column-filter"
-                placeholder="Publish Date"
-                [readonlyInput]="true"
-                dateFormat="dd.mm.yy"
-              ></p-calendar>
-            </th>
-            <th>
-              <input
-                pInputText
-                type="text"
-                (input)="
-                  dt.filter($any($event.target)?.value, 'authors', 'contains')
-                "
-                placeholder="Search by Authors"
-                class="p-column-filter"
-              />
-            </th>
-            <th style="width: 8rem"></th>
-            <th style="width: 8rem"></th>
-          </tr>
-          <tr>
-            <th style="width: 3rem"></th>
-            <th style="width: 3rem"></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>
-              <div class="p-field-checkbox">
-                <p-checkbox
-                  [(ngModel)]="genreGroupingChecked"
-                  [binary]="true"
-                  inputId="binary"
-                ></p-checkbox>
-                <label for="binary"> Group Genres</label>
-              </div>
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th style="width: 8rem"></th>
-            <th style="width: 8rem"></th>
-          </tr>
-        </ng-template>
+<!-- <p-toolbar styleClass="p-mb-4">
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      class="p-button-success p-mr-2"
+      (click)="openNew()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Delete"
+      icon="pi pi-trash"
+      class="p-button-danger"
+      (click)="deleteSelectedBooks()"
+      [disabled]="!selectedBooks || !selectedBooks.length"
+    ></button>
+  </ng-template>
+</p-toolbar> -->
 
-        <ng-template pTemplate="body" let-book>
-          <ng-container
-            [ngTemplateOutlet]="baseBody"
-            [ngTemplateOutletContext]="{ book: book }"
-          ></ng-container>
-        </ng-template>
+<p>
+  <mat-toolbar style="background-color:transparent">
+    <button mat-raised-button (click)="openNew()" color="primary">New</button>
+    <button mat-raised-button (click)="deleteSelectedBooks()" color="accent">Delete</button>
+  </mat-toolbar>
+</p>
 
-        <ng-template
-          *ngIf="groupTemplateOn"
-          pTemplate="groupheader"
-          let-book
-          let-rowIndex="rowIndex"
-          let-expanded="expanded"
-        >
-          <tr>
-            <td colspan="12">
-              <button
-                type="button"
-                pButton
-                pRipple
-                [pRowToggler]="book"
-                class="p-button-text p-button-rounded p-button-plain mr-2"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-              ></button>
-              <span class="font-bold ml-2">{{ book.genre }}</span>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template *ngIf="groupTemplateOn" pTemplate="groupfooter" let-book>
-          <tr class="p-rowgroup-footer">
-            <td style="min-width: 80%">
-              <div style="text-align: right; width: 100%">Total Books</div>
-            </td>
-            <td style="width: 20%">{{ calculateBooksTotal(book.genre) }}</td>
-          </tr>
-        </ng-template>
+<mat-form-field appearance="standard">
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input />
+</mat-form-field>
+<ng-container *ngIf="booksAsMatTableDataSource$ | async as books">
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="books" matSort>
 
-        <ng-template
-          *ngIf="groupTemplateOn"
-          pTemplate="rowexpansion"
-          let-book
-          let-rowIndex="rowIndex"
-        >
-          <ng-container
-            [ngTemplateOutlet]="baseBody"
-            [ngTemplateOutletContext]="{ book: book }"
-          ></ng-container>
-        </ng-template>
-
-        <ng-template let-book="book" #baseBody>
-          <tr class="p-selectable-row">
-            <td style="width: 3rem"></td>
-            <td style="width: 3rem"></td>
-            <td>
-              <p-tableCheckbox [value]="book"></p-tableCheckbox>
-            </td>
-            <td>
-              <span class="p-column-title">Id</span>
-              {{ book.key }}
-            </td>
-            <td>
-              <span class="p-column-title">ISBN</span>
-              {{ book.isbn }}
-            </td>
-            <td [pEditableColumn]="book" [pEditableColumnField]="'title'">
-              <span class="p-column-title">Title</span>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="book.title" />
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ book.title }}
-                </ng-template>
-              </p-cellEditor>
-            </td>
-            <td [pEditableColumn]="book" [pEditableColumnField]="'genre'">
-              <span class="p-column-title">Genre</span>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="book.genre" />
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ book.genre }}
-                </ng-template>
-              </p-cellEditor>
-            </td>
-            <td [pEditableColumn]="book" [pEditableColumnField]="'description'">
-              <span class="p-column-title">Description</span>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <textarea
-                    id="authors"
-                    pInputTextarea
-                    [(ngModel)]="book.description"
-                    required
-                    rows="3"
-                    cols="20"
-                  ></textarea>
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ book.description }}
-                </ng-template>
-              </p-cellEditor>
-            </td>
-            <td
-              [pEditableColumn]="book"
-              [pEditableColumnField]="'publishedDate'"
-            >
-              <span class="p-column-title">Publish Date</span>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <p-calendar
-                    [(ngModel)]="book.publishedDate"
-                    [showButtonBar]="true"
-                    styleClass="p-column-filter"
-                    placeholder="Publish Date"
-                    [readonlyInput]="true"
-                    dateFormat="dd.mm.yy"
-                  ></p-calendar>
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ book.publishedDate }}
-                </ng-template>
-              </p-cellEditor>
-            </td>
-            <td [pEditableColumn]="book" [pEditableColumnField]="'authors'">
-              <span class="p-column-title">Authors</span>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <textarea
-                    id="authors"
-                    pInputTextarea
-                    [(ngModel)]="book.authors"
-                    required
-                    rows="3"
-                    cols="20"
-                  ></textarea>
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ book.authors }}
-                </ng-template>
-              </p-cellEditor>
-            </td>
-            <td style="width: 8rem"></td>
-            <td style="width: 8rem"></td>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="8">No books found.</td>
-          </tr>
-        </ng-template>
-      </p-table>
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
     </ng-container>
-  </ng-container>
+  
+    <ng-container matColumnDef="key">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let row">{{row.key}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isbn">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ISBN</th>
+      <td mat-cell *matCellDef="let row">{{row.isbn}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+      <td mat-cell *matCellDef="let row">{{row.title}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="genre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Genre</th>
+      <td mat-cell *matCellDef="let row">{{row.genre}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+      <td mat-cell *matCellDef="let row">{{row.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="publishedDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>publishedDate</th>
+      <td mat-cell *matCellDef="let row">{{row.publishedDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="authors">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Authors</th>
+      <td mat-cell *matCellDef="let row">{{row.authors}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">
+        No data matching the filter "{{input.value}}"
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    aria-label="Select page of books"
+  ></mat-paginator>
 </div>
-
-<p-dialog
-  [(visible)]="bookDialog"
-  [style]="{ width: '450px' }"
-  header="Book Details"
-  [modal]="true"
-  styleClass="p-fluid"
->
-  <ng-template pTemplate="content">
-    <div class="p-field">
-      <label for="name">ISBN</label>
-      <input
-        type="text"
-        pInputText
-        id="name"
-        [(ngModel)]="book.isbn"
-        required
-        autofocus
-      />
-      <small class="p-invalid" *ngIf="submitted && !book.isbn"
-        >ISBN is required.</small
-      >
-    </div>
-    <div class="p-field">
-      <label for="title">Title</label>
-      <input
-        type="text"
-        pInputText
-        id="title"
-        [(ngModel)]="book.title"
-        required
-        autofocus
-      />
-      <small class="p-invalid" *ngIf="submitted && !book.title"
-        >Title is required.</small
-      >
-    </div>
-    <div class="p-field">
-      <label for="genre">Genre</label>
-      <input
-        type="text"
-        pInputText
-        id="genre"
-        [(ngModel)]="book.genre"
-        required
-        autofocus
-      />
-      <small class="p-invalid" *ngIf="submitted && !book.genre"
-        >Genre is required.</small
-      >
-    </div>
-    <div class="p-field">
-      <label for="description">Description</label>
-      <textarea
-        id="description"
-        pInputTextarea
-        [(ngModel)]="book.description"
-        required
-        rows="3"
-        cols="20"
-      ></textarea>
-    </div>
-    <div class="p-field">
-      <label for="publishedDate">Publish Date</label>
-      <p-calendar
-        id="publishedDate"
-        [(ngModel)]="book.publishedDate"
-        appendTo="body"
-        [showButtonBar]="true"
-        styleClass="p-column-filter"
-        placeholder="Publish Date"
-        [readonlyInput]="true"
-        dateFormat="dd.mm.yy"
-      ></p-calendar>
-    </div>
-    <div class="p-field">
-      <label for="authors">Authors</label>
-      <textarea
-        id="authors"
-        pInputTextarea
-        [(ngModel)]="book.authors"
-        required
-        rows="3"
-        cols="20"
-      ></textarea>
-    </div>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button
-      pButton
-      pRipple
-      label="Cancel"
-      icon="pi pi-times"
-      class="p-button-text"
-      (click)="hideDialog()"
-    ></button>
-    <button
-      pButton
-      pRipple
-      label="Save"
-      icon="pi pi-check"
-      class="p-button-text"
-      (click)="saveBook()"
-    ></button>
-  </ng-template>
-</p-dialog>
-
-<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+</ng-container>

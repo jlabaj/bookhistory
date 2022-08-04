@@ -2,8 +2,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database/';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -28,11 +29,14 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from '../app-routing.module';
+import { MaterialExampleModule } from './material.module';
 
 @NgModule({
-  imports: [
-    BrowserModule,
+  imports: [    
     BrowserAnimationsModule,
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
     AppRoutingModule,
     TableModule,
     CalendarModule,
@@ -49,13 +53,14 @@ import { AppRoutingModule } from '../app-routing.module';
     InputTextareaModule,
     CheckboxModule,
     ConfirmDialogModule,
-    FormsModule,
-    HttpClientModule,
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
     MatButtonModule,
     MatIconModule,
+    MatNativeDateModule,
+    MaterialExampleModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
   ],
@@ -85,6 +90,8 @@ import { AppRoutingModule } from '../app-routing.module';
     MatListModule,
     MatButtonModule,
     MatIconModule,
+    MatNativeDateModule,
+    MaterialExampleModule,
     AngularFireModule,
     AngularFireDatabaseModule,
   ],
