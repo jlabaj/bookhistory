@@ -8,19 +8,19 @@ Feel free to use _pallete.scss for defining your own pallete, _scaffolding.scss 
 For your convenience you can just do @use 'variables' @use scaffolding(mixins) etc. without absolute pahts, there is a preprocessing for that in angular.json.
 From the functionality point of view tha app works mostly, there are a few bugs. 
 Components in the app are:
-•	table
-•	list
-•	form
-•	input
-•	button
-•	label
-•	hint
-•	checkbox
-•	toolbar
-•	dialog
-•	datepicker
-•	paginator
-•	snack-bar
+-	table
+-	list
+-	form
+-	input
+-	button
+-	label
+-	hint
+-	checkbox
+-	toolbar
+-	dialog
+-	datepicker
+-	paginator
+-	snack-bar
 
 Feel free to style the application in any consistent and modern UX way using your own or combining external colors and fonts(like fontawesome).  
 Consider using dynamic css variables and sass modules. 
@@ -35,11 +35,11 @@ Consider using ripple effect.
 Web front-end in Angular with a backend component that displays the history of changes of book entities with pagination, filtering, ordering and optionally grouping.
 
 The book entity has 
-•	An id
-•	A title
-•	A short description
-•	Publish date
-•	Authors
+-	An id
+-	A title
+-	A short description
+-	Publish date
+-	Authors
 
 An example of changes could be a title was changed, an author was added, etc. It should also be possible to add books.
 In the list of changes it should display at least the time of change and a description of what was changed (e.g. Title was changed to “The Hobbit”)
