@@ -3,6 +3,9 @@
 
 ## UX instructions
 
+Create mockups for the new design of the app in either Adobe XD or Figma or similar.
+Implement your mockups.
+
 The theming comes from the indigo, pink and red pallete(see src/assets/styles/_theme.scss) of angular material + some primitive stylings in components, which are quite unsophisticated and sometimes with provocative colors(light green). 
 Feel free to use _pallete.scss for defining your own pallete, _scaffolding.scss for defining your mixins(rename it to mixins if you want), _variables.scss for defining your sass or css variables.
 For your convenience you can just do @use 'variables' @use scaffolding(mixins) etc. without absolute pahts, there is a preprocessing for that in angular.json.
@@ -24,11 +27,7 @@ Components in the app are:
 
 Feel free to style the application in any consistent and modern UX way using your own or combining external colors and fonts(like fontawesome).  
 Consider using dynamic css variables and sass modules. 
-Consider making the app responsive in mobile and other platforms for example with adding a layout package ro using your own media queries.
-Consider adding your own components like slide toggle, select, tree, sidenav or even an accordion or a drag and drop.
-Consider using ripple effect.
-
-
+Consider making the app responsive in mobile and other platforms for example with adding a layout package or using your own media queries.
 
 ## Description
 
