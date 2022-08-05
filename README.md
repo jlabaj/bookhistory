@@ -22,7 +22,7 @@ Components in the app are:
 •	paginator
 •	snack-bar
 
-Feel free to style the application in any consistent and modern UX way using your own or cobining external colors and fonts(like fontawesome).  
+Feel free to style the application in any consistent and modern UX way using your own or combining external colors and fonts(like fontawesome).  
 Consider using dynamic css variables and sass modules. 
 Consider making the app responsive in mobile and other platforms for example with adding a layout package ro using your own media queries.
 Consider adding your own components like slide toggle, select, tree, sidenav or even an accordion or a drag and drop.
