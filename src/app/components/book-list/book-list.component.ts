@@ -114,7 +114,7 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
           data: {
             dataKey: {
               book:this.selection.selected[0],
-              header: 'New Book'
+              header: this.newEditCaption + ' Book'
             }
           }
         });
