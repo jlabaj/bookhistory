@@ -1,42 +1,40 @@
-<div class="card">
-  <ng-container *ngIf="bookHistoryStore.entity$ | async as booksHistory">
-    <p-table
-      [value]="booksHistory"
-      [paginator]="true"
-      [rows]="rows"
-      [loading]="loading"
-      [showCurrentPageReport]="true"
-      [(first)]="first"
-      responsiveLayout="scroll"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [rowsPerPageOptions]="[10, 25, 50]"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="key">Id<p-sortIcon field="key"></p-sortIcon></th>
-          <th pSortableColumn="bookId">
-            Book Id <p-sortIcon field="bookId"></p-sortIcon>
-          </th>
-          <th pSortableColumn="isbn">
-            ISBN <p-sortIcon field="isbn"></p-sortIcon>
-          </th>
-          <th pSortableColumn="timeOfChange">
-            Time of change <p-sortIcon field="timeOfChange"></p-sortIcon>
-          </th>
-          <th pSortableColumn="change">
-            Change <p-sortIcon field="change"></p-sortIcon>
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-bookHistory>
-        <tr>
-          <td>{{ bookHistory.key }}</td>
-          <td>{{ bookHistory.bookId }}</td>
-          <td>{{ bookHistory.isbn }}</td>
-          <td>{{ bookHistory.timeOfChange }}</td>
-          <td>{{ bookHistory.change }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
+<ng-container *ngIf="bookHistoryStore.entity$ | async as booksHistory">
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="booksHistory" matSort>  
+    
+      <ng-container matColumnDef="key">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Key</th>
+        <td mat-cell *matCellDef="let row">{{row.key}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bookId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Book Id</th>
+        <td mat-cell *matCellDef="let row">{{row.bookId}}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="isbn">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ISBN</th>
+        <td mat-cell *matCellDef="let row">{{row.isbn}}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="timeOfChange">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Time of change</th>
+        <td mat-cell *matCellDef="let row">{{row.timeOfChange}}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="change">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Change</th>
+        <td mat-cell *matCellDef="let row">{{row.change}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>    
+  
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page of history"
+    ></mat-paginator>
+  </div>
   </ng-container>
-</div>

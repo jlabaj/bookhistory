@@ -1,24 +1,21 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DefaultStore, FireListBaseDataService } from '@bookhistory/shared';
 import { getClassName } from '@bookhistory/shared/tools';
-import {
-  ConfirmationService,
-  MessageService,
-  PrimeNGConfig
-} from 'primeng/api';
 import { map, Observable } from 'rxjs';
 import { SubSink } from 'subsink';
 import { BookHistoryStore } from '../book-history/book-history.component';
 import { BookHistory } from '../book-history/book-history.models';
 import { Book } from './book-list.models';
 import { ConfirmationDialog } from './confirmation-dialog.component';
+import { NewBookDialog } from './new-book-dialog.component';
 
 
 @Injectable()
@@ -43,7 +40,6 @@ export class BookFireListDataService<
   selector: 'app-book-list',
   templateUrl: './book-list.component.html',
   styleUrls: ['./book-list.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['select', 'key', 'isbn', 'title', 'genre', 'description', 'publishedDate', 'authors'];
@@ -55,11 +51,11 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   bookDialog!: boolean;
 
-  book!: Book;
+  canEdit = false;
+
+  newEditCaption = 'New';
 
   submitted!: boolean;
-
-  selectedBooks!: Book[];
 
   private subs = new SubSink();
 
@@ -68,11 +64,8 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public bookStore: BookStore<Book>,
     public bookHistoryStore: BookHistoryStore<BookHistory>,
-    private primengConfig: PrimeNGConfig,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private cdRef: ChangeDetectorRef,
     public dialog: MatDialog,
+    private _snackBar: MatSnackBar
   ) {
   }
 
@@ -106,104 +99,87 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  toggleSelection(row:any)
+  {
+    this.selection.toggle(row);
+    if (this.selection.selected.length == 1) this.newEditCaption = 'Edit';
+    else this.newEditCaption = 'New';
+  }
+
   openNew() {
-        this.book = {};
-        this.submitted = false;
-        this.bookDialog = true;
+
+        const dialogRef = this.dialog.open(NewBookDialog, {
+          width: '300px',
+          disableClose:false,
+          data: {
+            dataKey: {
+              book:this.selection.selected[0],
+              header: 'New Book'
+            }
+          }
+        });
+    
+        dialogRef.afterClosed().subscribe(
+          (book:Book) => {
+            if(book)
+            {
+              this.saveBook(book);
+            }
+          }
+        );
       }
 
-  openDialog(): void {
-    this.dialog.open(ConfirmationDialog, {
-      width: '250px',
-    } as MatDialogConfig);
+  
+
+  saveBook(book:Book) {
+    this.submitted = true;
+
+      if (book.key) {
+        this.updateBook(book);
+      } else {
+        this.createBook(book);
+      }
+
+      this.bookDialog = false;
   }
+
+  updateBook(book: Book, fieldName: string = '') {
+    if (book.key) {
+        this.subs.unsubscribe();
+        this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
+          this.bookHistoryStore.add({
+            bookId: book.key,
+            isbn: book.isbn,
+            timeOfChange: new Date().toLocaleString(),
+            change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
+          });
+          this._snackBar.open('Successful: Book Updated', 'success', {politeness: 'polite'});
+        });
+    }
+  }
+
+  createBook(book: Book) {
+    this.subs.unsubscribe();
+    book.publishedDate = this.formatDate(book.publishedDate);
+    this.subs.sink = this.bookStore.add(book).subscribe(() => {
+      this._snackBar.open('Successful: Book Created', 'success', {politeness: 'polite'});
+    });
+  }
+
+  formatDate(date: any) {
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
     
-  // hideDialog() {
-  //   this.bookDialog = false;
-  //   this.submitted = false;
-  // }
-
-  // saveBook() {
-  //   this.submitted = true;
-
-  //   if (this.book.title?.trim()) {
-  //     if (this.book.key) {
-  //       this.updateBook(this.book);
-  //     } else {
-  //       this.createBook(this.book);
-  //     }
-
-  //     this.bookDialog = false;
-  //     this.book = {};
-  //   }
-  // }
-
-  // updateBook(book: Book, fieldName: string = '') {
-  //   if (book.key) {
-  //     const valueChanged =
-  //       (this.bookEditInit as any)[fieldName] !== (book as any)[fieldName];
-  //     if (valueChanged) {
-  //       this.subs.unsubscribe();
-  //       this.subs.sink = this.bookStore.update(book.key, book).subscribe(() => {
-  //         this.bookHistoryStore.add({
-  //           bookId: book.key,
-  //           isbn: book.isbn,
-  //           timeOfChange: new Date().toLocaleString(),
-  //           change: `${fieldName} was changed to ${(book as any)[fieldName]}`,
-  //         });
-  //         this.messageService.add({
-  //           severity: 'success',
-  //           summary: 'Successful',
-  //           detail: 'Book Updated',
-  //           life: 3000,
-  //         });
-  //         this.submitted = true;
-  //       });
-  //     }
-  //   }
-  // }
-
-  // createBook(book: Book) {
-  //   this.subs.unsubscribe();
-  //   this.book.publishedDate = this.formatDate(book.publishedDate);
-  //   this.subs.sink = this.bookStore.add(book).subscribe(() => {
-  //     this.messageService.add({
-  //       severity: 'success',
-  //       summary: 'Successful',
-  //       detail: 'Book Created',
-  //       life: 3000,
-  //     });
-  //     this.submitted = true;
-  //   });
-  // }
-
-  // onEditComplete(book: {
-  //   field: unknown;
-  //   data: Book;
-  //   originalEvent: unknown;
-  //   index: unknown;
-  // }): void {
-  //   this.updateBook(book.data, book.field as string);
-  // }
-
-  // onEditInit(book: { data: Book }): void {
-  //   this.bookEditInit = JSON.parse(JSON.stringify(book.data));
-  // }
-
-  // formatDate(date: any) {
-  //   let month = date.getMonth() + 1;
-  //   let day = date.getDate();
-
-  //   if (month < 10) {
-  //     month = '0' + month;
-  //   }
-
-  //   if (day < 10) {
-  //     day = '0' + day;
-  //   }
-
-  //   return `${day}.${month}.${date.getFullYear()}`;
-  // }
+        if (month < 10) {
+          month = '0' + month;
+        }
+    
+        if (day < 10) {
+          day = '0' + day;
+        }
+    
+        return `${day}.${month}.${date.getFullYear()}`;
+      }
 
   // clear(table: Table) {
   //   table.clear();
@@ -214,34 +190,37 @@ export class BookListComponent implements OnInit, AfterViewInit, OnDestroy {
   //   this.isbnSearch = '';
   // }
 
-  // calculateBooksTotal(genre: string) {
-  //   return this.bookStore.getStore().filter((b: Book) => b.genre === genre)
-  //     .length;
-  // }
-
   deleteSelectedBooks() {
-    this.openDialog();
-    // this.confirmationService.confirm({
-    //   message: 'Are you sure you want to delete the selected books?',
-    //   header: 'Confirm',
-    //   icon: 'pi pi-exclamation-triangle',
-    //   accept: () => {
-    //     this.subs.unsubscribe();
-    //     this.subs.sink = this.bookStore
-    //       .deleteMultiple(this.selectedBooks.map((b) => b.key ?? ''))
-    //       .subscribe(() => {
-    //         this.messageService.add({
-    //           severity: 'success',
-    //           summary: 'Successful',
-    //           detail: 'Books Deleted',
-    //           life: 3000,
-    //         });
-    //         this.submitted = true;
-    //       });
-    //     this.selectedBooks = [];
-    //   },
-    // });
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      // width: '250px',
+      disableClose:false,
+      data: {
+        dataKey: {
+          message: 'Are you sure you want to delete the selected books?',
+          books:this.selection.selected,
+          header: 'Delete Row(s)'
+        }
+      }
+    });
+    
+
+    dialogRef.afterClosed().subscribe(
+      (data:any) => {
+        if(data === 'yes')
+        {
+          this.subs.unsubscribe();
+          this.subs.sink = this.bookStore
+            .deleteMultiple(this.selection.selected.map((b) => b.key ?? ''))
+            .subscribe(() => {
+              this._snackBar.open('Successful: Books Deleted', 'success', {politeness: 'polite'});
+
+              this.submitted = true;
+            });
+          }
+      }
+    );
   }
+
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;

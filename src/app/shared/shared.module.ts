@@ -11,22 +11,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ContextMenuModule } from 'primeng/contextmenu';
-import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { SliderModule } from 'primeng/slider';
-import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
-import { ToolbarModule } from 'primeng/toolbar';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from '../app-routing.module';
 import { MaterialExampleModule } from './material.module';
@@ -38,21 +22,6 @@ import { MaterialExampleModule } from './material.module';
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    TableModule,
-    CalendarModule,
-    SliderModule,
-    DialogModule,
-    MultiSelectModule,
-    ContextMenuModule,
-    DropdownModule,
-    ButtonModule,
-    ToastModule,
-    InputTextModule,
-    ProgressBarModule,
-    ToolbarModule,
-    InputTextareaModule,
-    CheckboxModule,
-    ConfirmDialogModule,
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
@@ -68,21 +37,7 @@ import { MaterialExampleModule } from './material.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    TableModule,
-    CalendarModule,
-    SliderModule,
-    DialogModule,
-    MultiSelectModule,
-    ContextMenuModule,
-    DropdownModule,
-    ButtonModule,
-    ToastModule,
-    InputTextModule,
-    ProgressBarModule,
-    ToolbarModule,
-    InputTextareaModule,
-    CheckboxModule,
-    ConfirmDialogModule,
+    ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
     MatToolbarModule,
@@ -95,13 +50,11 @@ import { MaterialExampleModule } from './material.module';
     AngularFireModule,
     AngularFireDatabaseModule,
   ],
-  providers: [MessageService, ConfirmationService],
 })
 export class SharedModule {
   public static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
-      providers: [MessageService, ConfirmationService],
     };
   }
 }

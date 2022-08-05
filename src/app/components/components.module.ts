@@ -10,6 +10,8 @@ import {
   BookListComponent,
   BookStore
 } from './book-list';
+import { ConfirmationDialog } from './book-list/confirmation-dialog.component';
+import { NewBookDialog } from './book-list/new-book-dialog.component';
 import { NavigationTopComponent } from './navigation-top/navigation-top.component';
 
 @NgModule({
@@ -17,6 +19,8 @@ import { NavigationTopComponent } from './navigation-top/navigation-top.componen
     BookListComponent,
     BookHistoryComponent,
     NavigationTopComponent,
+    ConfirmationDialog,
+    NewBookDialog
   ],
   imports: [SharedModule.forRoot()],
   exports: [NavigationTopComponent],

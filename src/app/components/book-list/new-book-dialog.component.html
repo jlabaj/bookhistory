@@ -1,0 +1,74 @@
+<button class="button-close" mat-button [mat-dialog-close]="true">X</button>
+<h1 mat-dialog-title>{{data.dataKey.header}}</h1>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="fill" style="display: none">
+    <mat-label>key</mat-label>
+    <input matInput
+            placeholder="key"
+           formControlName="key">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>ISBN</mat-label>
+    <input matInput
+            placeholder="ISBN"
+           formControlName="isbn">
+    <mat-error *ngIf="!form.controls['isbn'].valid && form.controls['isbn'].touched">
+      is Required!
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label >Title</mat-label>
+    <input matInput
+            placeholder="Title"
+           formControlName="title">
+    <mat-error *ngIf="!form.controls['title'].valid && form.controls['title'].touched">
+      is Required!
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label >Genre</mat-label>
+    <input matInput
+            placeholder="Genre"
+           formControlName="genre">
+    <mat-error *ngIf="!form.controls['genre'].valid && form.controls['genre'].touched">
+      is Required!
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label >Description</mat-label>
+    <input matInput
+            placeholder="Description"
+           formControlName="description">
+    <mat-error *ngIf="!form.controls['description'].valid && form.controls['description'].touched">
+      is Required!
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="example-form-field">
+      <mat-label>Published date</mat-label>
+      <input matInput [matDatepicker]="startatpicker"
+       formControlName="publishedDate"
+       placeholder="publishedDate">
+       <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="startatpicker">
+      </mat-datepicker-toggle>
+      <mat-datepicker #startatpicker>
+      </mat-datepicker>
+      <mat-error *ngIf="!form.controls['publishedDate'].valid && form.controls['publishedDate'].touched">
+        is Required!
+      </mat-error>
+   </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label >Authors</mat-label>
+    <textarea matInput
+            placeholder="Authors"
+           formControlName="authors">
+    </textarea>
+    <mat-error *ngIf="!form.controls['authors'].valid && form.controls['authors'].touched">    
+    is Required!
+    </mat-error>
+  </mat-form-field>
+</mat-dialog-content>
+ <div mat-dialog-actions>
+  <button mat-button mat-dialog-close color="primary" (click)="close()">Close</button>
+  <button mat-button mat-dialog-close color="accent" (click)="save()" cdkFocusInitial>save</button>
+</div> 

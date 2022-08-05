@@ -1,0 +1,16 @@
+.button-close {
+  justify-self: right;
+  float: right;
+  top:-24px;
+  right:-24px;
+  font-size: 20px;
+  border: none;
+  height: 30px;
+  background-color: #FFFFFF;
+  outline: none;
+  color: #c04747;
+  
+  &:hover {
+      cursor: pointer;
+  }
+}
