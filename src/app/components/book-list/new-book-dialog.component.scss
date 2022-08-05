@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 .button-close {
   justify-self: right;
   float: right;
@@ -8,7 +10,7 @@
   height: 30px;
   background-color: #FFFFFF;
   outline: none;
-  color: #c04747;
+  color: $my-color;
   
   &:hover {
       cursor: pointer;

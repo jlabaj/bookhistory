@@ -13,13 +13,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
   ngOnInit(): void {
     let book = this.data.dataKey.book;
     this.form = this.fb.group({
-      'key': [book.key, ''],
-      'isbn': [book.isbn, Validators.required],
-      'title': [book.title, Validators.required],
-      'genre': [book.genre, Validators.required],
-      'description': [book.description],
-      'publishedDate': [new Date(book.publishedDate), Validators.required],
-      'authors': [book.authors, Validators.required],
+      'key': [book?.key, ''],
+      'isbn': [book?.isbn, Validators.required],
+      'title': [book?.title, Validators.required],
+      'genre': [book?.genre, Validators.required],
+      'description': [book?.description],
+      'publishedDate': [book?.publishedDate ? new Date(book.publishedDate): null, Validators.required],
+      'authors': [book?.authors, Validators.required],
   });
   }
 

@@ -20,6 +20,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets/styles",
+                "src/assets/styles/partials"
+              ]
+            },
             "outputPath": "dist/angular11-firebase-crud",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -30,10 +36,9 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss",
-              "src/app/styles/theme.scss"
+            "styles": [           
+              "src/assets/styles/my-theme.scss",
+              "src/assets/styles/styles.scss"
             ],
             "scripts": []
           },
