@@ -29,6 +29,8 @@ Feel free to style the application in any consistent and modern UX way using you
 Consider using dynamic css variables and sass modules. 
 Consider making the app responsive in mobile and other platforms for example with adding a layout package or using your own media queries.
 
+Purpose of this task is to get to know your way of designing and styling the web application, that being said overall amount of this task should be between 4-8 hours.
+
 Good luck and have fun styling!
 
 ## Description
