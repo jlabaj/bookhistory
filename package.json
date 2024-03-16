@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "ng deploy",
+    "build:prod": "ng build --c=production"
   },
   "private": true,
   "dependencies": {
@@ -37,6 +39,7 @@
     "@angular/compiler-cli": "~13.3.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
+    "firebase-tools": "^10.9.2",
     "typescript": "~4.6.2"
   }
 }

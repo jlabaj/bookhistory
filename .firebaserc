@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "bookstore-d261a": {
+      "hosting": {
+        "BookHistory": [
+          "bookstore-d261a"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "bookstore-d261a"
+  }
+}
